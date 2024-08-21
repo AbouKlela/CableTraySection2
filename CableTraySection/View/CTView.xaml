@@ -179,7 +179,7 @@
                     <Button Content="Calculate Width" Grid.Row="0" Grid.Column="2"  Width="150" Height="25"  VerticalAlignment="Center" Command="{Binding CalculateTray}"/>
                     <TextBlock Text="Fillng Ratio %:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
                     <TextBox x:Name="FR" Grid.Row="2" Grid.Column="1" Text="{Binding FillingRatio}"/>
-                    <Button Content="Calculate FR" Grid.Row="2" Grid.Column="2"  Width="150" Height="25" VerticalAlignment="Center" />
+                    <Button Content="Calculate FR" Grid.Row="2" Grid.Column="2"  Width="150" Height="25" VerticalAlignment="Center" Command="{Binding FillingRatioCalc}" />
 
                 </Grid>
             </GroupBox>

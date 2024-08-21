@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 
 namespace CableTraySection.ViewModel
 {
@@ -196,6 +197,7 @@ namespace CableTraySection.ViewModel
 
 
         //--------------------------------------------------COMMANDS --------------------------------------------------------------
+        
         private RelayCommand addCommand;
 
         public RelayCommand AddCommand => addCommand ?? (addCommand = new RelayCommand(AddFunc));
@@ -211,6 +213,7 @@ namespace CableTraySection.ViewModel
 
 
         }
+
 
         private RelayCommand clearCommand;
 
@@ -249,6 +252,24 @@ namespace CableTraySection.ViewModel
                 DataHelper.Data.Clear();
                 DataHelper.Data = cableDatas.ToList();
             
+
+        }
+
+        private RelayCommand fillingRatioCalc;
+
+        public RelayCommand FillingRatioCalc => fillingRatioCalc ?? (fillingRatioCalc = new RelayCommand(CalculateFillingRatioFunc));
+
+        private void CalculateFillingRatioFunc(object obj)
+        {
+
+            double sum = 0;
+            foreach (double D in DataHelper.CableDiameters)
+            {
+                sum += D;
+            }
+            var count = DataHelper.CableDiameters.Count;
+            FillingRatio = (sum /Width) * 100;
+
 
         }
 
