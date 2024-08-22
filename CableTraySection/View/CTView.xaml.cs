@@ -1,7 +1,9 @@
 ﻿using CableTraySection.Model;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Markup;
 namespace CableTraySection.View
 {
     /// <summary>
@@ -12,8 +14,10 @@ namespace CableTraySection.View
         ViewModel.ViewModel viewModel = new ViewModel.ViewModel();
         public CTView()
         {
+
             InitializeComponent();
-           
+
+
             DataContext = viewModel;
         }
 
@@ -75,7 +79,7 @@ namespace CableTraySection.View
         {
             if (this.CoresComboBox.SelectedItem != null && this.ConductorTypeComboBox.SelectedItem != null && this.CableTypeComboBox.SelectedItem != null)
             {
-                Utisl.Excel(this.CoresComboBox.SelectedItem.ToString(), this.ConductorTypeComboBox.SelectedItem.ToString(), this.CableTypeComboBox.SelectedItem.ToString());
+                Utils.Excel(this.CoresComboBox.SelectedItem.ToString(), this.ConductorTypeComboBox.SelectedItem.ToString(), this.CableTypeComboBox.SelectedItem.ToString());
 
             }
             ChangeSelectedCable();
@@ -99,6 +103,6 @@ namespace CableTraySection.View
             }
         }
 
-      
+        
     }
 }

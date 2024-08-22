@@ -27,9 +27,10 @@ namespace CableTraySection.ViewModel
             set => SetProperty(ref to, value);
         }
 
+
         public string CoreNumber { get; set; }
 
-        private List<string> coreNumbers = new List<string>() { "1C", "2C", "3C", "3.5C", "4C" };
+        private readonly List<string> coreNumbers = new List<string>() { "1C", "2C", "3C", "3.5C", "4C" };
 
         public List<string> CoreNumbers
         {
@@ -39,7 +40,7 @@ namespace CableTraySection.ViewModel
 
         public string ConductorType { get; set; }
 
-        private List<string> conductortypes = new List<string>() { "CU", "AL" };
+        private readonly List<string> conductortypes = new List<string>() { "CU", "AL" };
 
         public List<string> Conductortypes
         {
@@ -49,7 +50,7 @@ namespace CableTraySection.ViewModel
 
         public string cableType { get; set; }
 
-        private List<string> cabletypes = new List<string>() { "PVC/PVC", "XLPE/PVC", "MICA/XLPE/LS0H", "XLPE/LSF0H" };
+        private readonly List<string> cabletypes = new List<string>() { "PVC/PVC", "XLPE/PVC", "MICA/XLPE/LS0H", "XLPE/LSF0H" };
 
         public List<string> CableTypes
         {
@@ -204,7 +205,7 @@ namespace CableTraySection.ViewModel
 
         private void AddFunc(object obj)
         {
-            CableDatas.Add(new CableData(from + " TO " + to, SelectedCableName, OD, EOD));
+            CableDatas.Add(new CableData(from + " To " + to, SelectedCableName, OD, EOD));
 
             DataHelper.CableDiameters.Clear();
             DataHelper.CableDiameters = cableDatas.ToList().Select(X => Double.Parse(X.DOD)).ToList();
@@ -222,6 +223,8 @@ namespace CableTraySection.ViewModel
         private void ClearFunc(object obj)
         {
             cableDatas.Clear();
+            DataHelper.CableDiameters.Clear();
+            DataHelper.Data.Clear();
 
         }
 
@@ -234,7 +237,7 @@ namespace CableTraySection.ViewModel
         private void CalculateTrayFunc(object obj)
         {
 
-            Width = Utisl.SizeCableTray(DataHelper.CableDiameters, SpareRatio, InitialRatio, BetweenRatio);
+            Width = Utils.SizeCableTray(DataHelper.CableDiameters, SpareRatio, InitialRatio, BetweenRatio);
 
         }
 
@@ -267,7 +270,6 @@ namespace CableTraySection.ViewModel
             {
                 sum += D;
             }
-            var count = DataHelper.CableDiameters.Count;
             FillingRatio = (sum /Width) * 100;
 
 
@@ -275,15 +277,17 @@ namespace CableTraySection.ViewModel
 
 
 
+        private RelayCommand createViewAndTrayCommand;
+        public RelayCommand CreateViewAndTrayCommand => createViewAndTrayCommand ?? (createViewAndTrayCommand = new RelayCommand(CreateViewAndTrayFunc));
 
-
-
-
-
-
-
-
-
-
+        private void CreateViewAndTrayFunc(object obj)
+        {
+            EventHandeler.Initial = initialRatio;
+            EventHandeler.Between = betweenRatio;
+            EventHandeler.Trayheight = Height;
+            EventHandeler.TrayWidht = Width;
+            EventHandeler.Event = Request.event1;
+            DataHelper.ExEvent.Raise();
+        }
     }
 }

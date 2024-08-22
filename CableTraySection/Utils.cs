@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace CableTraySection
 {
-    public class Utisl
+    public class Utils
     {
         public static void DrawTableGrid(Document doc, ViewDrafting view, XYZ startPoint, int numRows, int numCols, double cellWidth, double cellHeight)
         {
@@ -68,8 +68,10 @@ namespace CableTraySection
             DataHelper.CSOD = new List<Dictionary<string, string>>();
             if (DataHelper.FilePath == null)
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Excel Files|*.xls;*.xlsx;*.xlsm"
+                };
                 openFileDialog.ShowDialog();
                 DataHelper.FilePath = openFileDialog.FileName;
 
@@ -126,11 +128,10 @@ namespace CableTraySection
 
         public static double SizeCableTray(List<double> cableDiameters, double spare, double first, double between)
         {
-            double total = 0;
             double maxDiameter = cableDiameters[0];
             double sumDiameters = maxDiameter;
 
-            total = first * maxDiameter;
+            double total = first * maxDiameter;
 
             for (int i = 1; i < cableDiameters.Count; i++)
             {
@@ -140,15 +141,34 @@ namespace CableTraySection
             }
 
             total += sumDiameters;
+            // Lowest Standard is 100
+            if(total < 100)
+            {
+                total = 100;
+            }
+
+            //round to Standars
 
             if (spare == 0)
             {
-                return total;
+                return Math.Ceiling(total / 50) * 50;
             }
             else
             {
-                return spare * total;
+                return Math.Ceiling(spare * total / 50) * 50; 
+           
             }
+
+        }
+
+        public static double Convert_to_Feet(double value)
+        {
+            return UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Millimeters);
+        }
+
+        public static double Convert_to_mm(double value)
+        {
+            return UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Millimeters);
         }
 
 

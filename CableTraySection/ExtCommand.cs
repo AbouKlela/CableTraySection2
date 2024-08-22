@@ -10,11 +10,25 @@ namespace CableTraySection
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            try
+            {
+                DataHelper.UiDoc = commandData.Application.ActiveUIDocument;
+                DataHelper.Doc = DataHelper.UiDoc.Document;
+                ExternalEvent externalEvent = ExternalEvent.Create(new EventHandeler());
+                DataHelper.ExEvent = externalEvent;
 
-            CTView view = new CTView();
-            view.Show();
+                CTView view = new CTView();
+                view.Show();
 
-            return Result.Succeeded;
+                return Result.Succeeded;
+            }
+            catch (System.Exception e )
+            {
+
+                TaskDialog.Show("Error", e.Message);    
+                return Result.Failed;
+                throw;
+            }
         }
     }
 }

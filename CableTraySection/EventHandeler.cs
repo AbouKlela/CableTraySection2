@@ -4,18 +4,24 @@ namespace CableTraySection
 {
     public class EventHandeler : IExternalEventHandler
     {
-        public static EventEnum Event { get; set; }
+        public static Request Event { get; set; }
+        public static double TrayWidht { get; set; }
+        public static double Trayheight { get; set; }
+        public static double Initial { get; set; }
+        public static double Between { get; set; }
+
+
         public void Execute(UIApplication app)
         {
             switch (Event)
             {
-                case EventEnum.event1:
+                case Request.event1:
+                    RevitUtils.CreateView(DataHelper.UiDoc , TrayWidht , Trayheight,Initial , Between);
+                    break;
+                case Request.event2:
                     //Do something
                     break;
-                case EventEnum.event2:
-                    //Do something
-                    break;
-                case EventEnum.event3:
+                case Request.event3:
                     //Do something
                     break;
                 default:
@@ -33,7 +39,7 @@ namespace CableTraySection
 
 
 
-    public enum EventEnum
+    public enum Request
     {
         event1,
         event2,
