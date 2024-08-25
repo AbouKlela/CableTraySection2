@@ -248,6 +248,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CableTableCreator.cs" />
     <Compile Include="DataHelper.cs" />
     <Compile Include="EventHandeler.cs" />
     <Compile Include="ExtCommand.cs" />

@@ -6,38 +6,83 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static Autodesk.Revit.DB.SpecTypeId;
 
 namespace CableTraySection
 {
     public class Utils
     {
-        public static void DrawTableGrid(Document doc, ViewDrafting view, XYZ startPoint, int numRows, int numCols, double cellWidth, double cellHeight)
+        //public static void DrawTableGrid(Document doc, ViewDrafting view, XYZ startPoint, int numRows, int numCols, double cellWidth, double cellHeight)
+        //{
+        //    using (Transaction t = new Transaction(doc, "Draw Table Grid"))
+        //    {
+        //        t.Start();
+
+        //        // Draw horizontal lines
+        //        for (int i = 0; i <= numRows; i++)
+        //        {
+        //            XYZ start = startPoint + new XYZ(0, -i * cellHeight, 0);
+        //            XYZ end = start + new XYZ(numCols * cellWidth, 0, 0);
+        //            Line line = Line.CreateBound(start, end);
+        //            doc.Create.NewDetailCurve(view, line);
+        //        }
+
+        //        // Draw vertical lines
+        //        for (int j = 0; j <= numCols; j++)
+        //        {
+        //            XYZ start = startPoint + new XYZ(j * cellWidth, 0, 0);
+        //            XYZ end = start + new XYZ(0, -numRows * cellHeight, 0);
+        //            Line line = Line.CreateBound(start, end);
+        //            doc.Create.NewDetailCurve(view, line);
+        //        }
+
+        //        t.Commit();
+        //    }
+        //}
+        public static void DrawTableGrid(Document doc, ViewDrafting view, XYZ startPoint, int numRows)
         {
+            // Define fixed column widths
+            double[] columnWidths = { Utils.Convert_to_Feet(75), Utils.Convert_to_Feet(150), Utils.Convert_to_Feet(270), Utils.Convert_to_Feet(100), Utils.Convert_to_Feet(100) };
+            double cellHeight = Utils.Convert_to_Feet(60.0); // Fixed cell height
+
             using (Transaction t = new Transaction(doc, "Draw Table Grid"))
             {
                 t.Start();
 
+                // Calculate the total width of the table by summing up the column widths
+                double totalWidth = columnWidths.Sum();
+
                 // Draw horizontal lines
                 for (int i = 0; i <= numRows; i++)
                 {
+                    // The Y position decreases as we move down rows
                     XYZ start = startPoint + new XYZ(0, -i * cellHeight, 0);
-                    XYZ end = start + new XYZ(numCols * cellWidth, 0, 0);
+                    XYZ end = start + new XYZ(totalWidth, 0, 0); // Draw across the total width of the table
                     Line line = Line.CreateBound(start, end);
                     doc.Create.NewDetailCurve(view, line);
                 }
 
                 // Draw vertical lines
-                for (int j = 0; j <= numCols; j++)
+                double currentX = 0.0; // Track the X position as we move across columns
+                for (int j = 0; j <= columnWidths.Length; j++)
                 {
-                    XYZ start = startPoint + new XYZ(j * cellWidth, 0, 0);
-                    XYZ end = start + new XYZ(0, -numRows * cellHeight, 0);
+                    // For each column, we draw from top to bottom
+                    XYZ start = startPoint + new XYZ(currentX, 0, 0);
+                    XYZ end = start + new XYZ(0, -numRows * cellHeight, 0); // Draw down the total height of the table
                     Line line = Line.CreateBound(start, end);
                     doc.Create.NewDetailCurve(view, line);
+
+                    // Move to the next X position based on the column width (unless it's the last line)
+                    if (j < columnWidths.Length)
+                    {
+                        currentX += columnWidths[j];
+                    }
                 }
 
                 t.Commit();
             }
         }
+
         public void AddTextToTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, int numCols, double cellWidth, double cellHeight)
         {
             using (Transaction t = new Transaction(doc, "Add Text to Table"))
@@ -171,6 +216,20 @@ namespace CableTraySection
             return UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Millimeters);
         }
 
+
+        public static string GetSecondAndThirdChanarcters(string input)
+        {
+            int startIndex = input.IndexOf('(');
+            int endIndex = input.IndexOf('C');
+
+            // If both '(' and 'C' are found, extract the part between them
+            if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
+            {
+                return input.Substring(startIndex + 1, endIndex - startIndex); // Extract between '(' and 'C'
+            }
+            return input; // Return the input as is if '(' or 'C' are not found
+        }
+        
 
     }
 }

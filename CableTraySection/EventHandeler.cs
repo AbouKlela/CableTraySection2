@@ -9,14 +9,14 @@ namespace CableTraySection
         public static double Trayheight { get; set; }
         public static double Initial { get; set; }
         public static double Between { get; set; }
-
+        public static string SectionName { get;  set; }
 
         public void Execute(UIApplication app)
         {
             switch (Event)
             {
                 case Request.event1:
-                    RevitUtils.CreateView(DataHelper.UiDoc , TrayWidht , Trayheight,Initial , Between);
+                    RevitUtils.CreateView(DataHelper.UiDoc , TrayWidht , Trayheight,Initial , Between , SectionName);
                     break;
                 case Request.event2:
                     //Do something

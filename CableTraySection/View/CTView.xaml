@@ -35,7 +35,7 @@
                 <RowDefinition Height="5*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <TextBlock   Grid.Row="0" Grid.Column="0" Text="Cable Tray Sizer" VerticalAlignment="Center"  FontSize="18" Margin="10,0,0,0" />
+            <TextBlock   Grid.Row="0" Grid.Column="0" Text="Cable Tray Sizer" VerticalAlignment="Center" Grid.ColumnSpan="2 "  HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0" />
 
             <Button  Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="0,5,5,0" Click="Button_Click"  />
 
@@ -201,7 +201,13 @@
 
                     </Grid.RowDefinitions>
 
-                <Button Content="Draw Tray" Grid.Row="0" Grid.Column="0"  Height="25"  VerticalAlignment="Center" Command="{Binding CreateViewAndTrayCommand}" />
+                <TextBlock Text="Section Name:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="SectionName" Grid.Row="0" Grid.Column="1" Text="{Binding SectionName}"/>
+                <TextBlock Text="Table:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <CheckBox x:Name="Table" Grid.Row="1" Grid.Column="1" IsChecked="{Binding Table}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Dimention:" Grid.Row="2" Grid.Column="0" />
+                <CheckBox x:Name="Dimention" Grid.Row="2" Grid.Column="1" IsChecked="{Binding Dimention}"  HorizontalAlignment="Center"/>
+                <Button Content="Draw Tray" Grid.Row="2" Grid.Column="2"  Height="25"  VerticalAlignment="Center"  Command="{Binding CreateViewAndTrayCommand}" />
 
             </Grid>
             </GroupBox>
@@ -209,10 +215,12 @@
 
             <!-- Developed By -->
 
-            <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+            <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="2">
                 <materialDesign:PackIcon Kind="Code" Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,0,5" />
-                <TextBlock  Text="Developed by: Eng. Mohamed AbouKlela" VerticalAlignment="Center" HorizontalAlignment="Stretch"  FontSize="15" Margin="10,0,0,5" />
-            </StackPanel>
+                <TextBlock  Text="Developed by: Eng. Mohamed AbouKlela " VerticalAlignment="Center" HorizontalAlignment="Stretch"  FontSize="15" Margin="10,0,0,5" />
+            <TextBlock Text="Copyright © 2024 IBIMS All rights reserved." VerticalAlignment="Center"   FontSize="15" Margin="340,0,0,5" />
+
+        </StackPanel>
 
 
 

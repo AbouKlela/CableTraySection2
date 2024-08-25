@@ -205,7 +205,7 @@ namespace CableTraySection.ViewModel
 
         private void AddFunc(object obj)
         {
-            CableDatas.Add(new CableData(from + " To " + to, SelectedCableName, OD, EOD));
+            CableDatas.Add(new CableData("FROM " +from + " TO " + to, SelectedCableName, OD, EOD));
 
             DataHelper.CableDiameters.Clear();
             DataHelper.CableDiameters = cableDatas.ToList().Select(X => Double.Parse(X.DOD)).ToList();
@@ -287,7 +287,21 @@ namespace CableTraySection.ViewModel
             EventHandeler.Trayheight = Height;
             EventHandeler.TrayWidht = Width;
             EventHandeler.Event = Request.event1;
+            EventHandeler.SectionName = SectionName;
             DataHelper.ExEvent.Raise();
         }
+
+        private string sectionName;
+
+        public string SectionName { get => sectionName; set => SetProperty(ref sectionName, value); }
+
+        private bool? table = true;
+
+        public bool? Table { get => table; set => SetProperty(ref table, value); }
+
+
+        private bool? dimention = true;
+
+        public bool? Dimention { get => dimention; set => SetProperty(ref dimention, value); }
     }
 }
