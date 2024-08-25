@@ -15,10 +15,10 @@ namespace CableTraySection
     public class KLELA
     {
 
-        public static void DrawTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, List<CableData> cableDataList)
+        public static void DrawTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, List<CableData> cableDataList , string trayWidth)
         {
             // Column widths as per the image
-            double[] columnWidths = { Utils.Convert_to_Feet(75), Utils.Convert_to_Feet(150), Utils.Convert_to_Feet(270), Utils.Convert_to_Feet(100), Utils.Convert_to_Feet(100) };
+            double[] columnWidths = { Utils.Convert_to_Feet(75), Utils.Convert_to_Feet(150), Utils.Convert_to_Feet(300), Utils.Convert_to_Feet(100), Utils.Convert_to_Feet(100) };
             double cellHeight = Utils.Convert_to_Feet(60.0); // Row height
             int numCols = columnWidths.Length;
 
@@ -92,6 +92,25 @@ namespace CableTraySection
                     // Earthing Diameter
                     WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[4]*1.25, -cellHeight / 2, 0), data.DEOD);
                 }
+
+                var totalCableDiameter = DataHelper.CableDiameters.Sum(x =>x);
+
+                double additionalY = -cellHeight * (numRows + 1); // Below the last row
+
+                // Write Total Cable Diameter
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY , 0), "Total Cable Diameter: " + totalCableDiameter);
+
+                // Write Cable Tray Width
+                additionalY -= cellHeight; // Move further down for next line
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY  , 0), "Cable Tray Width: " + trayWidth);
+
+                // Write Filling Ratio
+                additionalY -= cellHeight; // Move further down for next line
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY  , 0), "Filling Ratio: " + "fillingRatio");
+
+
+
+
 
                 t.Commit();
 

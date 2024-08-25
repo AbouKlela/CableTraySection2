@@ -98,7 +98,7 @@ namespace CableTraySection
 
                 trans.Commit();
 
-                KLELA.DrawTable(doc, draftingView, new XYZ(Utils.Convert_to_Feet(-200), Utils.Convert_to_Feet(-20), 0), DataHelper.Data.Count+1, DataHelper.Data);
+                KLELA.DrawTable(doc, draftingView, new XYZ(Utils.Convert_to_Feet(-200), Utils.Convert_to_Feet(-20), 0), DataHelper.Data.Count+1, DataHelper.Data,trayWidth.ToString());
 
 
 
