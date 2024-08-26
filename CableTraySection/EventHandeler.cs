@@ -10,16 +10,20 @@ namespace CableTraySection
         public static double Initial { get; set; }
         public static double Between { get; set; }
         public static string SectionName { get;  set; }
+        public static double FillingRatio { get;  set; }
 
         public void Execute(UIApplication app)
         {
             switch (Event)
             {
                 case Request.event1:
-                    RevitUtils.CreateView(DataHelper.UiDoc , TrayWidht , Trayheight,Initial , Between , SectionName);
+                    //Create View
+                    RevitUtils.CreateView(DataHelper.UiDoc , TrayWidht , Trayheight,Initial , Between , SectionName , FillingRatio);
                     break;
                 case Request.event2:
-                    //Do something
+                    //Load Families
+                    RevitUtils.LoadFamiliesFromFolder(DataHelper.Doc, "C:\\KLELA-SECTION\\Families");
+
                     break;
                 case Request.event3:
                     //Do something

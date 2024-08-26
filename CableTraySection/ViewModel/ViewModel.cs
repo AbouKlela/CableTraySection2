@@ -198,17 +198,19 @@ namespace CableTraySection.ViewModel
 
 
         //--------------------------------------------------COMMANDS --------------------------------------------------------------
-        
+
         private RelayCommand addCommand;
 
         public RelayCommand AddCommand => addCommand ?? (addCommand = new RelayCommand(AddFunc));
 
         private void AddFunc(object obj)
         {
-            CableDatas.Add(new CableData("FROM " +from + " TO " + to, SelectedCableName, OD, EOD));
+            CableDatas.Add(new CableData("FROM " + from + " TO " + to, SelectedCableName, OD, EOD));
 
             DataHelper.CableDiameters.Clear();
             DataHelper.CableDiameters = cableDatas.ToList().Select(X => Double.Parse(X.DOD)).ToList();
+            DataHelper.EarthingDiameters.Clear();
+            DataHelper.EarthingDiameters = cableDatas.ToList().Select(X => Double.Parse(X.DEOD)).ToList();
             DataHelper.Data.Clear();
             DataHelper.Data = cableDatas.ToList();
 
@@ -224,6 +226,7 @@ namespace CableTraySection.ViewModel
         {
             cableDatas.Clear();
             DataHelper.CableDiameters.Clear();
+            DataHelper.EarthingDiameters.Clear();
             DataHelper.Data.Clear();
 
         }
@@ -248,13 +251,15 @@ namespace CableTraySection.ViewModel
 
         private void RemoveCableFunc(object obj)
         {
-           
-                CableDatas.RemoveAt(SelectedCable);
-                DataHelper.CableDiameters.Clear();
-                DataHelper.CableDiameters = cableDatas.ToList().Select(X => Double.Parse(X.DOD)).ToList();
-                DataHelper.Data.Clear();
-                DataHelper.Data = cableDatas.ToList();
-            
+
+            CableDatas.RemoveAt(SelectedCable);
+            DataHelper.CableDiameters.Clear();
+            DataHelper.CableDiameters = cableDatas.ToList().Select(X => Double.Parse(X.DOD)).ToList();
+            DataHelper.EarthingDiameters.Clear();
+            DataHelper.EarthingDiameters = cableDatas.ToList().Select(X => Double.Parse(X.DOD)).ToList();
+            DataHelper.Data.Clear();
+            DataHelper.Data = cableDatas.ToList();
+
 
         }
 
@@ -268,9 +273,15 @@ namespace CableTraySection.ViewModel
             double sum = 0;
             foreach (double D in DataHelper.CableDiameters)
             {
-                sum += D;
+                sum += Utils.CalculateAreaFromDiameter(D);
             }
-            FillingRatio = (sum /Width) * 100;
+            foreach (double D in DataHelper.EarthingDiameters)
+            {
+                sum += Utils.CalculateAreaFromDiameter(D);
+            }
+
+
+            FillingRatio = (sum /( Width*Height)) * 100;
 
 
         }
@@ -286,8 +297,10 @@ namespace CableTraySection.ViewModel
             EventHandeler.Between = betweenRatio;
             EventHandeler.Trayheight = Height;
             EventHandeler.TrayWidht = Width;
-            EventHandeler.Event = Request.event1;
             EventHandeler.SectionName = SectionName;
+            EventHandeler.FillingRatio = FillingRatio;
+
+            EventHandeler.Event = Request.event1;
             DataHelper.ExEvent.Raise();
         }
 

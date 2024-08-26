@@ -12,33 +12,7 @@ namespace CableTraySection
 {
     public class Utils
     {
-        //public static void DrawTableGrid(Document doc, ViewDrafting view, XYZ startPoint, int numRows, int numCols, double cellWidth, double cellHeight)
-        //{
-        //    using (Transaction t = new Transaction(doc, "Draw Table Grid"))
-        //    {
-        //        t.Start();
 
-        //        // Draw horizontal lines
-        //        for (int i = 0; i <= numRows; i++)
-        //        {
-        //            XYZ start = startPoint + new XYZ(0, -i * cellHeight, 0);
-        //            XYZ end = start + new XYZ(numCols * cellWidth, 0, 0);
-        //            Line line = Line.CreateBound(start, end);
-        //            doc.Create.NewDetailCurve(view, line);
-        //        }
-
-        //        // Draw vertical lines
-        //        for (int j = 0; j <= numCols; j++)
-        //        {
-        //            XYZ start = startPoint + new XYZ(j * cellWidth, 0, 0);
-        //            XYZ end = start + new XYZ(0, -numRows * cellHeight, 0);
-        //            Line line = Line.CreateBound(start, end);
-        //            doc.Create.NewDetailCurve(view, line);
-        //        }
-
-        //        t.Commit();
-        //    }
-        //}
         public static void DrawTableGrid(Document doc, ViewDrafting view, XYZ startPoint, int numRows)
         {
             // Define fixed column widths
@@ -187,7 +161,7 @@ namespace CableTraySection
 
             total += sumDiameters;
             // Lowest Standard is 100
-            if(total < 100)
+            if (total < 100)
             {
                 total = 100;
             }
@@ -200,8 +174,8 @@ namespace CableTraySection
             }
             else
             {
-                return Math.Ceiling(spare * total / 50) * 50; 
-           
+                return Math.Ceiling(spare * total / 50) * 50;
+
             }
 
         }
@@ -229,7 +203,15 @@ namespace CableTraySection
             }
             return input; // Return the input as is if '(' or 'C' are not found
         }
-        
+
+        public static double CalculateAreaFromDiameter(double diameter)
+        {
+            return Math.PI * Math.Pow(diameter / 2, 2);
+        }
+
+
+
+
 
     }
 }

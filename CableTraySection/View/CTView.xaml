@@ -4,23 +4,31 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
          xmlns:viewModel="clr-namespace:CableTraySection.ViewModel"
         ResizeMode="NoResize" WindowStyle="None"
-       
+        TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+        Background="{DynamicResource MaterialDesign.Brush.Background}"
+        TextElement.FontWeight="Medium"
         Title="Cable Tray Sections Creator" Height="800" Width="1000" MouseDown="Window_MouseDown" Topmost="False"  >
+    
     <Window.DataContext>
         <viewModel:ViewModel />
     </Window.DataContext>
+    
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />-->
+                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Amber" SecondaryColor="Blue" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 
 
 
+    <materialDesign:Card>
+        
 
     <Grid >
             <Grid.ColumnDefinitions>
@@ -207,7 +215,7 @@
                 <CheckBox x:Name="Table" Grid.Row="1" Grid.Column="1" IsChecked="{Binding Table}" HorizontalAlignment="Center"/>
                 <TextBlock Text="Dimention:" Grid.Row="2" Grid.Column="0" />
                 <CheckBox x:Name="Dimention" Grid.Row="2" Grid.Column="1" IsChecked="{Binding Dimention}"  HorizontalAlignment="Center"/>
-                <Button Content="Draw Tray" Grid.Row="2" Grid.Column="2"  Height="25"  VerticalAlignment="Center"  Command="{Binding CreateViewAndTrayCommand}" />
+                <Button Content="Draw SEC" Grid.Row="2" Grid.Column="2"  Height="25"  VerticalAlignment="Center"  Command="{Binding CreateViewAndTrayCommand}" />
 
             </Grid>
             </GroupBox>
@@ -229,6 +237,8 @@
 
 
         </Grid>
-   
+    </materialDesign:Card>
+
+
 
 </Window>

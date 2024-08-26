@@ -12,14 +12,14 @@ namespace CableTraySection
 {
   
 
-    public class KLELA
+    public class TableAndData
     {
 
-        public static void DrawTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, List<CableData> cableDataList , string trayWidth)
+        public static void DrawTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, List<CableData> cableDataList , string trayWidth , double fillingRatio, string sectionName)
         {
             // Column widths as per the image
-            double[] columnWidths = { Utils.Convert_to_Feet(75), Utils.Convert_to_Feet(150), Utils.Convert_to_Feet(300), Utils.Convert_to_Feet(100), Utils.Convert_to_Feet(100) };
-            double cellHeight = Utils.Convert_to_Feet(60.0); // Row height
+            double[] columnWidths = { Utils.Convert_to_Feet(75), Utils.Convert_to_Feet(200), Utils.Convert_to_Feet(400), Utils.Convert_to_Feet(120), Utils.Convert_to_Feet(120) };
+            double cellHeight = Utils.Convert_to_Feet(50); // Row height
             int numCols = columnWidths.Length;
 
             // Header labels
@@ -78,35 +78,40 @@ namespace CableTraySection
                     WriteText(doc, view, rowStart + new XYZ(columnWidths[0]/2 , -cellHeight / 2, 0), (i + 1).ToString());
 
                     // Feeder Details
-                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[1] , -cellHeight / 2, 0), data.DfromTo);
+                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[1] - Utils.Convert_to_Feet(25), -cellHeight / 2, 0), data.DfromTo);
                     currentX += columnWidths[1];
 
                     // Feeder
-                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[2]/1.25 , -cellHeight / 2, 0), data.DSelectedCable);
+                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[2]-Utils.Convert_to_Feet(125) , -cellHeight / 2, 0), data.DSelectedCable);
                     currentX += columnWidths[2];
 
                     // Cable Diameter
-                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[3]*1.25 , -cellHeight / 2, 0), data.DOD);
+                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[3] , -cellHeight / 2, 0), data.DOD);
                     currentX += columnWidths[3];
 
                     // Earthing Diameter
-                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[4]*1.25, -cellHeight / 2, 0), data.DEOD);
+                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[4], -cellHeight / 2, 0), data.DEOD);
                 }
 
                 var totalCableDiameter = DataHelper.CableDiameters.Sum(x =>x);
+                var totalEarthingDiameter = DataHelper.EarthingDiameters.Sum(x => x);
+                var totalDiameters = totalCableDiameter + totalEarthingDiameter;
 
                 double additionalY = -cellHeight * (numRows + 1); // Below the last row
 
                 // Write Total Cable Diameter
-                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY , 0), "Total Cable Diameter: " + totalCableDiameter);
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY , 0), "Section Name: " + sectionName);
 
                 // Write Cable Tray Width
                 additionalY -= cellHeight; // Move further down for next line
-                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY  , 0), "Cable Tray Width: " + trayWidth);
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY  , 0), "Cable Tray Width (mm): " + trayWidth);
 
                 // Write Filling Ratio
                 additionalY -= cellHeight; // Move further down for next line
-                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY  , 0), "Filling Ratio: " + "fillingRatio");
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY  , 0), "Filling Ratio %: " + fillingRatio);
+
+                additionalY -= cellHeight; // Move further down for next line
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY, 0), "Total Cable Diameter (mm): " + totalDiameters );
 
 
 

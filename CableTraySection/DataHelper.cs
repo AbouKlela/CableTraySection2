@@ -18,13 +18,13 @@ namespace CableTraySection
 
         public static List<Double> CableDiameters = new List<double>();
 
+        public static List<Double> EarthingDiameters = new List<double>();
+
+
         public static UIDocument UiDoc { get; set; }
         public static Autodesk.Revit.DB.Document Doc { get; set; }
-        public static ExternalEvent ExEvent { get; internal set; }
-
-
-
-
+        public static ExternalEvent ExEvent { get;  set; }
+        
 
     }
 }
