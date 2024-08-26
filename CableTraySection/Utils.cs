@@ -10,7 +10,7 @@ using static Autodesk.Revit.DB.SpecTypeId;
 
 namespace CableTraySection
 {
-    public class Utils
+    public static class  Utils
     {
 
         public static void DrawTableGrid(Document doc, ViewDrafting view, XYZ startPoint, int numRows)
@@ -57,7 +57,7 @@ namespace CableTraySection
             }
         }
 
-        public void AddTextToTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, int numCols, double cellWidth, double cellHeight)
+        public static void AddTextToTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, int numCols, double cellWidth, double cellHeight)
         {
             using (Transaction t = new Transaction(doc, "Add Text to Table"))
             {
@@ -184,6 +184,11 @@ namespace CableTraySection
         {
             return UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Millimeters);
         }
+        public static double CTF(this double value)
+        {
+            return UnitUtils.ConvertToInternalUnits(value, UnitTypeId.Millimeters);
+        }
+
 
         public static double Convert_to_mm(double value)
         {

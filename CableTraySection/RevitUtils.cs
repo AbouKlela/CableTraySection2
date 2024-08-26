@@ -16,6 +16,7 @@ namespace CableTraySection
         public static void CreateView(UIDocument uidoc, double trayWidth, double trayHeight, double initial, double between, string sectionName, double fillingRatio)
         {
             Document doc = DataHelper.Doc;
+            ReferenceArray referenceArray = new ReferenceArray();
             XYZ CurrentPosition = new XYZ(0, 0, 0);
 
             // Start a transaction
@@ -60,6 +61,18 @@ namespace CableTraySection
                 var tray = doc.Create.NewFamilyInstance(CurrentPosition, cableTrayFamilySymbol, draftingView);
                 tray.LookupParameter("Tray Length").Set(Utils.Convert_to_Feet(trayWidth));
                 tray.LookupParameter("Tray Height").Set(Utils.Convert_to_Feet(trayHeight));
+
+
+                #region DimentionTest
+                referenceArray.Append(GetReference(CurrentPosition, draftingView));
+                referenceArray.Append(GetReference(CurrentPosition + new XYZ(Utils.Convert_to_Feet(trayWidth), 0, 0), draftingView));
+                var line = Line.CreateBound(CurrentPosition + new XYZ(0, Utils.Convert_to_Feet(trayHeight), 0), new XYZ(Utils.Convert_to_Feet(trayWidth), Utils.Convert_to_Feet(trayHeight+50), 0));
+                doc.Create.NewDimension(draftingView, line, referenceArray); 
+                #endregion
+
+
+
+
                 for (int i = 0; i < DataHelper.Data.Count; i++)
                 {
                     var CTypeForSympol = Utils.GetSecondAndThirdChanarcters(DataHelper.Data[i].DSelectedCable);
@@ -68,7 +81,7 @@ namespace CableTraySection
                     {
                         ConductorFamilySympol.Activate();
                     }
-                   
+
 
 
                     if (i == 0)
@@ -133,7 +146,7 @@ namespace CableTraySection
 
                 trans.Commit();
 
-                TableAndData.DrawTable(doc, draftingView, new XYZ(Utils.Convert_to_Feet(-100), Utils.Convert_to_Feet(-100), 0), DataHelper.Data.Count + 1, DataHelper.Data, trayWidth.ToString(), fillingRatio , sectionName);
+                TableAndData.DrawTable(doc, draftingView, new XYZ(Utils.Convert_to_Feet(-100), Utils.Convert_to_Feet(-100), 0), DataHelper.Data.Count + 1, DataHelper.Data, trayWidth.ToString(), fillingRatio, sectionName);
 
 
 
@@ -164,5 +177,17 @@ namespace CableTraySection
         }
 
 
+        public static Reference GetReference(XYZ point, ViewDrafting view)
+        {
+            var line = Line.CreateBound(point, point + new XYZ(0, Utils.Convert_to_Feet(9), 0));
+
+            var curve = DataHelper.Doc.Create.NewDetailCurve(view, line) as CurveElement;
+
+            var geometryObjects = curve.get_Geometry(new Options() { ComputeReferences = true }).ToList().FirstOrDefault() as Line;
+
+            var reference = geometryObjects.Reference;
+
+            return reference;
+        }
     }
 }
