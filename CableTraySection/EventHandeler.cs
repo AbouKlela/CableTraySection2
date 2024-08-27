@@ -14,6 +14,7 @@ namespace CableTraySection
 
         public static bool Table { get; set; }
         public static bool Dimention { get; set; }
+        public static double TrayThickness { get;  set; }
 
         public void Execute(UIApplication app)
         {
@@ -23,7 +24,7 @@ namespace CableTraySection
                 {
                     case Request.event1:
                         //Create View
-                        RevitUtils.CreateView(DataHelper.UiDoc, TrayWidht, Trayheight, Initial, Between, SectionName, FillingRatio, Table, Dimention);
+                        RevitUtils.CreateView(DataHelper.UiDoc, TrayWidht, Trayheight, Initial, Between, SectionName, FillingRatio, Table, Dimention , TrayThickness);
                         break;
                     case Request.event2:
                         //Load Families

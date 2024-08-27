@@ -152,15 +152,23 @@ namespace CableTraySection.ViewModel
 
         }
 
-        private int height = 100;
-        public int Height
+        private double height = 100;
+        public double Height
         {
 
             get => height;
             set => SetProperty(ref height, value);
         }
 
-        private double fillingRatio;
+        private double thickness = 10;
+        public double Thickness
+        {
+
+            get => thickness;
+            set => SetProperty(ref thickness, value);
+        }
+
+        private double fillingRatio=0;
         public double FillingRatio
         {
 
@@ -260,6 +268,13 @@ namespace CableTraySection.ViewModel
 
         private void CalculateTrayFunc(object obj)
         {
+            if(CableDatas.Count == 0)
+            {
+
+                TaskDialog.Show("Action Required",
+                 "Please add the necessary Cables before proceeding.\n", TaskDialogCommonButtons.Ok);
+                return;
+            }
 
             Width = Utils.SizeCableTray(DataHelper.CableDiameters, SpareRatio, InitialRatio, BetweenRatio);
 
@@ -290,7 +305,13 @@ namespace CableTraySection.ViewModel
 
         private void CalculateFillingRatioFunc(object obj)
         {
+            if (CableDatas.Count == 0) {
 
+                TaskDialog.Show("Action Required",
+                                "Please add the necessary Cables before proceeding.\n", TaskDialogCommonButtons.Ok);
+                return; 
+            
+            }
             double sum = 0;
             foreach (double D in DataHelper.CableDiameters)
             {
@@ -315,7 +336,7 @@ namespace CableTraySection.ViewModel
         private void CreateViewAndTrayFunc(object obj)
         {
 
-            if (SectionName == null || Width == 0 || FillingRatio == 0 || cableDatas.Count == 0)
+            if (string.IsNullOrEmpty(sectionName) || Width == 0 || FillingRatio == 0 || cableDatas.Count == 0)
             {
                 TaskDialog.Show("Action Required",
                                 "Please complete the following steps before proceeding:\n" +
@@ -331,6 +352,7 @@ namespace CableTraySection.ViewModel
             EventHandeler.Between = betweenRatio;
             EventHandeler.Trayheight = Height;
             EventHandeler.TrayWidht = Width;
+            EventHandeler.TrayThickness = Thickness;
             EventHandeler.SectionName = SectionName;
             EventHandeler.FillingRatio = FillingRatio;
             EventHandeler.Table = (bool)Table;

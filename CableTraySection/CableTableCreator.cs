@@ -10,12 +10,12 @@ using Document = Autodesk.Revit.DB.Document;
 
 namespace CableTraySection
 {
-  
+
 
     public class TableAndData
     {
 
-        public static void DrawTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, List<CableData> cableDataList , string trayWidth , double fillingRatio, string sectionName)
+        public static void DrawTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, List<CableData> cableDataList, string trayWidth, double fillingRatio, string sectionName)
         {
             // Column widths as per the image
             double[] columnWidths = { Utils.Convert_to_Feet(75), Utils.Convert_to_Feet(285), Utils.Convert_to_Feet(400), Utils.Convert_to_Feet(120), Utils.Convert_to_Feet(120) };
@@ -75,43 +75,44 @@ namespace CableTraySection
                     currentX = 0.0;
 
                     // Cable No.
-                    WriteText(doc, view, rowStart + new XYZ(columnWidths[0]/2 , -cellHeight / 2, 0), (i + 1).ToString());
+                    WriteText(doc, view, rowStart + new XYZ(columnWidths[0] / 2, -cellHeight / 2, 0), (i + 1).ToString());
 
                     // Feeder Details
                     WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[1] - Utils.Convert_to_Feet(60), -cellHeight / 2, 0), data.DfromTo);
                     currentX += columnWidths[1];
 
                     // Feeder
-                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[2]-Utils.Convert_to_Feet(125) , -cellHeight / 2, 0), data.DSelectedCable);
+                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[2] - Utils.Convert_to_Feet(125), -cellHeight / 2, 0), data.DSelectedCable);
                     currentX += columnWidths[2];
 
                     // Cable Diameter
-                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[3] , -cellHeight / 2, 0), data.DOD);
+                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[3], -cellHeight / 2, 0), data.DOD);
                     currentX += columnWidths[3];
 
                     // Earthing Diameter
                     WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[4], -cellHeight / 2, 0), data.DEOD);
                 }
 
-                var totalCableDiameter = DataHelper.CableDiameters.Sum(x =>x);
+                var totalCableDiameter = DataHelper.CableDiameters.Sum(x => x);
                 var totalEarthingDiameter = DataHelper.EarthingDiameters.Sum(x => x);
                 var totalDiameters = totalCableDiameter + totalEarthingDiameter;
 
                 double additionalY = -cellHeight * (numRows + 1); // Below the last row
 
                 // Write Total Cable Diameter
-                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY , 0), "Section Name: " + sectionName);
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY, 0), "Section Name : " + sectionName );
 
                 // Write Cable Tray Width
                 additionalY -= cellHeight; // Move further down for next line
-                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY  , 0), "Cable Tray Width (mm): " + trayWidth);
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY, 0), "Cable Tray Width : " + trayWidth + " mm");
 
                 // Write Filling Ratio
                 additionalY -= cellHeight; // Move further down for next line
-                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY  , 0), "Filling Ratio %: " + fillingRatio);
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY, 0), "Filling Ratio : " + fillingRatio + " %");
 
+                // Write Total Cable Diameters
                 additionalY -= cellHeight; // Move further down for next line
-                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY, 0), "Total Cable Diameter (mm): " + totalDiameters );
+                WriteText(doc, view, startPoint + new XYZ(totalWidth / 2, additionalY, 0), "Total Cable Diameters : " + totalDiameters+ " mm");
 
 
 
@@ -128,6 +129,7 @@ namespace CableTraySection
         }
         public static void WriteText(Document doc, ViewDrafting view, XYZ location, string text)
         {
+            // Helper method to write text at a specific location
             TextNoteType textNoteType = new FilteredElementCollector(doc)
                 .OfClass(typeof(TextNoteType))
                 .Cast<TextNoteType>()
@@ -142,7 +144,6 @@ namespace CableTraySection
         }
     }
 
-    // Helper method to write text at a specific location
-    
+
 
 }

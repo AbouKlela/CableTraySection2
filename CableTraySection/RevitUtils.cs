@@ -7,16 +7,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using Document = Autodesk.Revit.DB.Document;
 
 namespace CableTraySection
 {
     public class RevitUtils
     {
-        public static void CreateView(UIDocument uidoc, double trayWidth, double trayHeight, double initial, double between, string sectionName, double fillingRatio, bool table, bool dimention)
+        public static void CreateView(UIDocument uidoc, double trayWidth, double trayHeight, double initial, double between, string sectionName, double fillingRatio, bool table, bool dimention, double trayThickness)
         {
             Document doc = DataHelper.Doc;
             ReferenceArray referenceArray = new ReferenceArray();
+            ReferenceArray referenceArrayEarthing = new ReferenceArray();
             XYZ CurrentPosition = new XYZ(0, 0, 0);
 
             // Start a transaction
@@ -64,6 +66,8 @@ namespace CableTraySection
                 var tray = doc.Create.NewFamilyInstance(CurrentPosition, cableTrayFamilySymbol, draftingView);
                 tray.LookupParameter("Tray Length").Set((trayWidth).CTF());
                 tray.LookupParameter("Tray Height").Set((trayHeight).CTF());
+                tray.LookupParameter("Tray Thickness").Set((trayThickness).CTF());
+
 
 
                 if (dimention)
@@ -119,6 +123,15 @@ namespace CableTraySection
                         //EARTHING CABLE
                         if (eDiameter != 0)
                         {
+                            if (dimention)
+                            {
+                                referenceArrayEarthing.Append(GetReference(CurrentPosition, draftingView));
+                                referenceArrayEarthing.Append(GetReference(CurrentPosition + new XYZ(eDiameter, 0, 0), draftingView));
+                                var lineE = Line.CreateBound(CurrentPosition + new XYZ(0, (-20.0 - trayThickness).CTF(), 0), CurrentPosition + new XYZ(eDiameter, 0, 0) + new XYZ(0, (-20.0 - trayThickness).CTF(), 0));
+                                doc.Create.NewDimension(draftingView, lineE, referenceArrayEarthing);
+                                referenceArrayEarthing.Clear();
+                            }
+
                             var earthingPosition = CurrentPosition + new XYZ(eDiameter / 2, 0, 0);
                             var earthing = doc.Create.NewFamilyInstance(earthingPosition, EarthingFamilySympol, draftingView);
                             earthing.LookupParameter("Diameter").Set(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DEOD)));
@@ -155,6 +168,17 @@ namespace CableTraySection
                         // Earthing
                         if (eDiameter != 0)
                         {
+                            if (dimention)
+                            {
+                                referenceArrayEarthing.Append(GetReference(CurrentPosition, draftingView));
+                                referenceArrayEarthing.Append(GetReference(CurrentPosition + new XYZ(eDiameter, 0, 0), draftingView));
+                                var lineE = Line.CreateBound(CurrentPosition + new XYZ(0, (-20.0 - trayThickness).CTF(), 0), CurrentPosition + new XYZ(eDiameter, 0, 0) + new XYZ(0, (-20.0 - trayThickness).CTF(), 0));
+                                doc.Create.NewDimension(draftingView, lineE, referenceArrayEarthing);
+                                referenceArrayEarthing.Clear();
+                            }
+
+
+
                             var earthingPosition = CurrentPosition + new XYZ(eDiameter / 2, 0, 0);
                             var earthing = doc.Create.NewFamilyInstance(earthingPosition, EarthingFamilySympol, draftingView);
                             earthing.LookupParameter("Diameter").Set(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DEOD)));
@@ -170,9 +194,37 @@ namespace CableTraySection
                 if (dimention)
                 {
                     var line2 = Line.CreateBound(new XYZ(0, 0, 0) + new XYZ(0, (trayHeight + 20).CTF(), 0), new XYZ(trayWidth.CTF(), (trayHeight + 20).CTF(), 0));
-                    doc.Create.NewDimension(draftingView, line2, referenceArray);
-                }
+                    var dim = doc.Create.NewDimension(draftingView, line2, referenceArray);
 
+                    // Move the text up
+                    var segments = dim.Segments.Cast<DimensionSegment>().OrderBy(x => x.TextPosition.X).ToList();
+                    for (int i = 0; i < segments.Count; i = i + 2)
+                    {
+                        var seg = segments[i];
+                        seg.TextPosition = seg.TextPosition + new XYZ(0, 10.0.CTF(), 0);
+                    }
+                    //Tray Height Dimention
+                    referenceArray.Clear();
+                    var lineHeight = Line.CreateBound(new XYZ((trayWidth + 50).CTF(), 0, 0), new XYZ((trayWidth + 50).CTF(), (trayHeight).CTF(), 0));
+                    referenceArray.Append(GetReference(new XYZ((trayWidth).CTF(), 0, 0), draftingView));
+                    referenceArray.Append(GetReference(new XYZ((trayWidth).CTF(), (trayHeight).CTF(), 0), draftingView));
+                    doc.Create.NewDimension(draftingView, lineHeight, referenceArray);
+
+                    //Tray Thikness Dimention
+                    referenceArray.Clear();
+                    var lineThikness = Line.CreateBound(new XYZ(0, (-20.0 - trayThickness).CTF(), 0), new XYZ((-trayThickness).CTF(), (-20.0 - trayThickness).CTF(), 0));
+                    referenceArray.Append(GetReference(new XYZ(0, 0, 0), draftingView));
+                    referenceArray.Append(GetReference(new XYZ((-trayThickness).CTF(), 0, 0), draftingView));
+                    var d = doc.Create.NewDimension(draftingView, lineThikness, referenceArray);
+
+                    referenceArray.Clear();
+
+
+
+
+
+                }
+                CreateDimentionType(DataHelper.Doc);
 
                 trans.Commit();
 
@@ -227,7 +279,7 @@ namespace CableTraySection
         }
 
 
-       public static string  GetUniqueViewName(Document doc, string baseName)
+        public static string GetUniqueViewName(Document doc, string baseName)
         {
             // Start with the original section name
             string uniqueName = baseName;
@@ -247,5 +299,25 @@ namespace CableTraySection
 
             return uniqueName;
         }
+
+
+        public static void CreateDimentionType(Document doc) {
+
+            var DimStyle = new FilteredElementCollector(doc).OfClass(typeof(DimensionType)).WhereElementIsElementType().Cast<DimensionType>().ToList();
+            var LinerDimStyle = DimStyle.Where(x=>x.FamilyName != x.Name && x.StyleType == DimensionStyleType.Linear).ToList().FirstOrDefault();
+           var newStyle= LinerDimStyle.Duplicate("CT-TOOLKIT") as DimensionType;
+            newStyle.get_Parameter(BuiltInParameter.TEXT_SIZE).Set(2.0.CTF());
+            newStyle.get_Parameter(BuiltInParameter.TEXT_STYLE_BOLD).Set(1);
+            newStyle.get_Parameter(BuiltInParameter.ALTERNATE_UNITS).Set(0);
+
+            newStyle.GetAlternateUnitsFormatOptions().UseDefault = false;
+            newStyle.GetAlternateUnitsFormatOptions().Accuracy =0.1;
+           
+
+
+
+        }
+       
+
     }
 }
