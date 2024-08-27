@@ -19,12 +19,14 @@ namespace CableTraySection
             Document doc = DataHelper.Doc;
             ReferenceArray referenceArray = new ReferenceArray();
             ReferenceArray referenceArrayEarthing = new ReferenceArray();
-            XYZ CurrentPosition = new XYZ(0, 0, 0);
+            XYZ currentPosition = new XYZ(0, 0, 0);
+
 
             // Start a transaction
             using (Transaction trans = new Transaction(doc, "Create Drafting View"))
             {
                 trans.Start();
+                var dimType = CreateDimentionType(DataHelper.Doc);
 
                 // Define the view scale (Optional)
                 int viewScale = 3;
@@ -63,7 +65,7 @@ namespace CableTraySection
                     EarthingFamilySympol.Activate();
                 }
 
-                var tray = doc.Create.NewFamilyInstance(CurrentPosition, cableTrayFamilySymbol, draftingView);
+                var tray = doc.Create.NewFamilyInstance(currentPosition, cableTrayFamilySymbol, draftingView);
                 tray.LookupParameter("Tray Length").Set((trayWidth).CTF());
                 tray.LookupParameter("Tray Height").Set((trayHeight).CTF());
                 tray.LookupParameter("Tray Thickness").Set((trayThickness).CTF());
@@ -73,10 +75,10 @@ namespace CableTraySection
                 if (dimention)
                 {
                     #region Dimention The Trray
-                    referenceArray.Append(GetReference(CurrentPosition, draftingView));
-                    referenceArray.Append(GetReference(CurrentPosition + new XYZ(trayWidth.CTF(), 0, 0), draftingView));
+                    referenceArray.Append(GetReference(currentPosition, draftingView));
+                    referenceArray.Append(GetReference(currentPosition + new XYZ(trayWidth.CTF(), 0, 0), draftingView));
                     var line = Line.CreateBound(new XYZ(0, 0, 0) + new XYZ(0, (trayHeight + 50).CTF(), 0), new XYZ(trayWidth.CTF(), (trayHeight + 50).CTF(), 0));
-                    doc.Create.NewDimension(draftingView, line, referenceArray);
+                    doc.Create.NewDimension(draftingView, line, referenceArray, dimType);
                     #endregion 
                 }
 
@@ -103,21 +105,21 @@ namespace CableTraySection
                         {
 
                             #region Dimention First Cable
-                            referenceArray.Append(GetReference((CurrentPosition + new XYZ(diameter * initial, 0, 0)), draftingView));
-                            referenceArray.Append(GetReference((CurrentPosition + new XYZ((diameter * initial) + (diameter), 0, 0)), draftingView));
+                            referenceArray.Append(GetReference((currentPosition + new XYZ(diameter * initial, 0, 0)), draftingView));
+                            referenceArray.Append(GetReference((currentPosition + new XYZ((diameter * initial) + (diameter), 0, 0)), draftingView));
                             #endregion
 
                         }
 
                         // To Centre Of the First Cable
-                        CurrentPosition += new XYZ((diameter * initial + diameter / 2), 0, 0);
-                        var cable = doc.Create.NewFamilyInstance(CurrentPosition, ConductorFamilySympol, draftingView);
+                        currentPosition += new XYZ((diameter * initial + diameter / 2), 0, 0);
+                        var cable = doc.Create.NewFamilyInstance(currentPosition, ConductorFamilySympol, draftingView);
 
                         cable.LookupParameter("Diameter").Set(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
                         cable.LookupParameter("Comments").Set(DataHelper.Data[i].DSelectedCable + " - " + DataHelper.Data[i].DfromTo);
 
                         // To End Of the First Calbe
-                        CurrentPosition += new XYZ((diameter / 2), 0, 0);
+                        currentPosition += new XYZ((diameter / 2), 0, 0);
 
 
                         //EARTHING CABLE
@@ -125,14 +127,14 @@ namespace CableTraySection
                         {
                             if (dimention)
                             {
-                                referenceArrayEarthing.Append(GetReference(CurrentPosition, draftingView));
-                                referenceArrayEarthing.Append(GetReference(CurrentPosition + new XYZ(eDiameter, 0, 0), draftingView));
-                                var lineE = Line.CreateBound(CurrentPosition + new XYZ(0, (-20.0 - trayThickness).CTF(), 0), CurrentPosition + new XYZ(eDiameter, 0, 0) + new XYZ(0, (-20.0 - trayThickness).CTF(), 0));
-                                doc.Create.NewDimension(draftingView, lineE, referenceArrayEarthing);
+                                referenceArrayEarthing.Append(GetReference(currentPosition, draftingView));
+                                referenceArrayEarthing.Append(GetReference(currentPosition + new XYZ(eDiameter, 0, 0), draftingView));
+                                var lineE = Line.CreateBound(currentPosition + new XYZ(0, (-20.0 - trayThickness).CTF(), 0), currentPosition + new XYZ(eDiameter, 0, 0) + new XYZ(0, (-20.0 - trayThickness).CTF(), 0));
+                                doc.Create.NewDimension(draftingView, lineE, referenceArrayEarthing, dimType);
                                 referenceArrayEarthing.Clear();
                             }
 
-                            var earthingPosition = CurrentPosition + new XYZ(eDiameter / 2, 0, 0);
+                            var earthingPosition = currentPosition + new XYZ(eDiameter / 2, 0, 0);
                             var earthing = doc.Create.NewFamilyInstance(earthingPosition, EarthingFamilySympol, draftingView);
                             earthing.LookupParameter("Diameter").Set(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DEOD)));
 
@@ -151,18 +153,18 @@ namespace CableTraySection
                         var bet = Math.Max(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i - 1].DOD)), Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
 
                         #region Dimention Rest of Cables
-                        referenceArray.Append(GetReference((CurrentPosition + new XYZ(diameter * between, 0, 0)), draftingView));
-                        referenceArray.Append(GetReference((CurrentPosition + new XYZ((diameter * between) + (diameter), 0, 0)), draftingView));
+                        referenceArray.Append(GetReference((currentPosition + new XYZ(diameter * between, 0, 0)), draftingView));
+                        referenceArray.Append(GetReference((currentPosition + new XYZ((diameter * between) + (diameter), 0, 0)), draftingView));
                         #endregion
 
                         // To Centre Of the Next Cable
-                        CurrentPosition += new XYZ(bet * between + diameter / 2, 0, 0);
-                        var cable = doc.Create.NewFamilyInstance(CurrentPosition, ConductorFamilySympol, draftingView);
+                        currentPosition += new XYZ(bet * between + diameter / 2, 0, 0);
+                        var cable = doc.Create.NewFamilyInstance(currentPosition, ConductorFamilySympol, draftingView);
                         cable.LookupParameter("Diameter").Set(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
                         cable.LookupParameter("Comments").Set(DataHelper.Data[i].DSelectedCable + " - " + DataHelper.Data[i].DfromTo);
 
                         // To End Of the Next Calbe
-                        CurrentPosition += new XYZ(diameter / 2, 0, 0);
+                        currentPosition += new XYZ(diameter / 2, 0, 0);
 
 
                         // Earthing
@@ -170,16 +172,16 @@ namespace CableTraySection
                         {
                             if (dimention)
                             {
-                                referenceArrayEarthing.Append(GetReference(CurrentPosition, draftingView));
-                                referenceArrayEarthing.Append(GetReference(CurrentPosition + new XYZ(eDiameter, 0, 0), draftingView));
-                                var lineE = Line.CreateBound(CurrentPosition + new XYZ(0, (-20.0 - trayThickness).CTF(), 0), CurrentPosition + new XYZ(eDiameter, 0, 0) + new XYZ(0, (-20.0 - trayThickness).CTF(), 0));
-                                doc.Create.NewDimension(draftingView, lineE, referenceArrayEarthing);
+                                referenceArrayEarthing.Append(GetReference(currentPosition, draftingView));
+                                referenceArrayEarthing.Append(GetReference(currentPosition + new XYZ(eDiameter, 0, 0), draftingView));
+                                var lineE = Line.CreateBound(currentPosition + new XYZ(0, (-20.0 - trayThickness).CTF(), 0), currentPosition + new XYZ(eDiameter, 0, 0) + new XYZ(0, (-20.0 - trayThickness).CTF(), 0));
+                                doc.Create.NewDimension(draftingView, lineE, referenceArrayEarthing, dimType);
                                 referenceArrayEarthing.Clear();
                             }
 
 
 
-                            var earthingPosition = CurrentPosition + new XYZ(eDiameter / 2, 0, 0);
+                            var earthingPosition = currentPosition + new XYZ(eDiameter / 2, 0, 0);
                             var earthing = doc.Create.NewFamilyInstance(earthingPosition, EarthingFamilySympol, draftingView);
                             earthing.LookupParameter("Diameter").Set(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DEOD)));
 
@@ -194,7 +196,7 @@ namespace CableTraySection
                 if (dimention)
                 {
                     var line2 = Line.CreateBound(new XYZ(0, 0, 0) + new XYZ(0, (trayHeight + 20).CTF(), 0), new XYZ(trayWidth.CTF(), (trayHeight + 20).CTF(), 0));
-                    var dim = doc.Create.NewDimension(draftingView, line2, referenceArray);
+                    var dim = doc.Create.NewDimension(draftingView, line2, referenceArray, dimType);
 
                     // Move the text up
                     var segments = dim.Segments.Cast<DimensionSegment>().OrderBy(x => x.TextPosition.X).ToList();
@@ -208,14 +210,14 @@ namespace CableTraySection
                     var lineHeight = Line.CreateBound(new XYZ((trayWidth + 50).CTF(), 0, 0), new XYZ((trayWidth + 50).CTF(), (trayHeight).CTF(), 0));
                     referenceArray.Append(GetReference(new XYZ((trayWidth).CTF(), 0, 0), draftingView));
                     referenceArray.Append(GetReference(new XYZ((trayWidth).CTF(), (trayHeight).CTF(), 0), draftingView));
-                    doc.Create.NewDimension(draftingView, lineHeight, referenceArray);
+                    doc.Create.NewDimension(draftingView, lineHeight, referenceArray, dimType);
 
                     //Tray Thikness Dimention
                     referenceArray.Clear();
                     var lineThikness = Line.CreateBound(new XYZ(0, (-20.0 - trayThickness).CTF(), 0), new XYZ((-trayThickness).CTF(), (-20.0 - trayThickness).CTF(), 0));
                     referenceArray.Append(GetReference(new XYZ(0, 0, 0), draftingView));
                     referenceArray.Append(GetReference(new XYZ((-trayThickness).CTF(), 0, 0), draftingView));
-                    var d = doc.Create.NewDimension(draftingView, lineThikness, referenceArray);
+                    var d = doc.Create.NewDimension(draftingView, lineThikness, referenceArray, dimType);
 
                     referenceArray.Clear();
 
@@ -224,7 +226,6 @@ namespace CableTraySection
 
 
                 }
-                CreateDimentionType(DataHelper.Doc);
 
                 trans.Commit();
 
@@ -301,23 +302,43 @@ namespace CableTraySection
         }
 
 
-        public static void CreateDimentionType(Document doc) {
+        public static DimensionType CreateDimentionType(Document doc)
+        {
 
-            var DimStyle = new FilteredElementCollector(doc).OfClass(typeof(DimensionType)).WhereElementIsElementType().Cast<DimensionType>().ToList();
-            var LinerDimStyle = DimStyle.Where(x=>x.FamilyName != x.Name && x.StyleType == DimensionStyleType.Linear).ToList().FirstOrDefault();
-           var newStyle= LinerDimStyle.Duplicate("CT-TOOLKIT") as DimensionType;
-            newStyle.get_Parameter(BuiltInParameter.TEXT_SIZE).Set(2.0.CTF());
-            newStyle.get_Parameter(BuiltInParameter.TEXT_STYLE_BOLD).Set(1);
-            newStyle.get_Parameter(BuiltInParameter.ALTERNATE_UNITS).Set(0);
 
-            newStyle.GetAlternateUnitsFormatOptions().UseDefault = false;
-            newStyle.GetAlternateUnitsFormatOptions().Accuracy =0.1;
-           
+            var allDimensionTypesDimStyle = new FilteredElementCollector(doc).OfClass(typeof(DimensionType)).WhereElementIsElementType().Cast<DimensionType>().ToList();
+            var dimensionTypeCehck = allDimensionTypesDimStyle.FirstOrDefault(x => x.Name == "CT-TOOLKIT");
 
+            if (dimensionTypeCehck != null)
+            {
+                var check = allDimensionTypesDimStyle.FirstOrDefault(x => x.Name == "CT-TOOLKIT");
+                return check;
+            }
+            var dimType = allDimensionTypesDimStyle.Where(x => x.FamilyName != x.Name && x.StyleType == DimensionStyleType.Linear).ToList().FirstOrDefault();
+
+            // Duplicate the DimensionType
+            DimensionType newDimType = dimType.Duplicate("CT-TOOLKIT") as DimensionType;
+
+            // Set Accuracy to 0.1
+            if (newDimType != null)
+            {
+                FormatOptions formatOptions = newDimType.GetUnitsFormatOptions();
+                formatOptions.UseDefault = false;
+                formatOptions.SetUnitTypeId(UnitTypeId.Millimeters);
+                formatOptions.Accuracy = 0.1;
+                newDimType.SetUnitsFormatOptions(formatOptions);
+                newDimType.get_Parameter(BuiltInParameter.TEXT_SIZE).Set(2.0.CTF());
+                newDimType.get_Parameter(BuiltInParameter.TEXT_STYLE_BOLD).Set(1);
+                newDimType.get_Parameter(BuiltInParameter.ALTERNATE_UNITS).Set(0);
+            }
+
+
+
+            return newDimType;
 
 
         }
-       
+
 
     }
 }
