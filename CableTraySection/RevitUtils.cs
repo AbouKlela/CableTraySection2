@@ -13,7 +13,7 @@ namespace CableTraySection
 {
     public class RevitUtils
     {
-        public static void CreateView(UIDocument uidoc, double trayWidth, double trayHeight, double initial, double between, string sectionName, double fillingRatio)
+        public static void CreateView(UIDocument uidoc, double trayWidth, double trayHeight, double initial, double between, string sectionName, double fillingRatio, bool table, bool dimention)
         {
             Document doc = DataHelper.Doc;
             ReferenceArray referenceArray = new ReferenceArray();
@@ -36,8 +36,11 @@ namespace CableTraySection
                 // Create the drafting view
                 ViewDrafting draftingView = ViewDrafting.Create(doc, draftingViewFamilyType.Id);
 
+                //Get Unique Name
+                string uniqueName = GetUniqueViewName(doc, sectionName);
+
                 // Set the name of the drafting view
-                draftingView.Name = sectionName;
+                draftingView.Name = uniqueName;
 
                 // Set the scale of the drafting view
                 draftingView.Scale = viewScale;
@@ -59,16 +62,19 @@ namespace CableTraySection
                 }
 
                 var tray = doc.Create.NewFamilyInstance(CurrentPosition, cableTrayFamilySymbol, draftingView);
-                tray.LookupParameter("Tray Length").Set(Utils.Convert_to_Feet(trayWidth));
-                tray.LookupParameter("Tray Height").Set(Utils.Convert_to_Feet(trayHeight));
+                tray.LookupParameter("Tray Length").Set((trayWidth).CTF());
+                tray.LookupParameter("Tray Height").Set((trayHeight).CTF());
 
 
-                #region DimentionTest
-                referenceArray.Append(GetReference(CurrentPosition, draftingView));
-                referenceArray.Append(GetReference(CurrentPosition + new XYZ(Utils.Convert_to_Feet(trayWidth), 0, 0), draftingView));
-                var line = Line.CreateBound(CurrentPosition + new XYZ(0, Utils.Convert_to_Feet(trayHeight), 0), new XYZ(Utils.Convert_to_Feet(trayWidth), Utils.Convert_to_Feet(trayHeight+50), 0));
-                doc.Create.NewDimension(draftingView, line, referenceArray); 
-                #endregion
+                if (dimention)
+                {
+                    #region Dimention The Trray
+                    referenceArray.Append(GetReference(CurrentPosition, draftingView));
+                    referenceArray.Append(GetReference(CurrentPosition + new XYZ(trayWidth.CTF(), 0, 0), draftingView));
+                    var line = Line.CreateBound(new XYZ(0, 0, 0) + new XYZ(0, (trayHeight + 50).CTF(), 0), new XYZ(trayWidth.CTF(), (trayHeight + 50).CTF(), 0));
+                    doc.Create.NewDimension(draftingView, line, referenceArray);
+                    #endregion 
+                }
 
 
 
@@ -88,9 +94,21 @@ namespace CableTraySection
                     {
                         var diameter = Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD));
                         var eDiameter = Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DEOD));
+
+                        if (dimention)
+                        {
+
+                            #region Dimention First Cable
+                            referenceArray.Append(GetReference((CurrentPosition + new XYZ(diameter * initial, 0, 0)), draftingView));
+                            referenceArray.Append(GetReference((CurrentPosition + new XYZ((diameter * initial) + (diameter), 0, 0)), draftingView));
+                            #endregion
+
+                        }
+
                         // To Centre Of the First Cable
                         CurrentPosition += new XYZ((diameter * initial + diameter / 2), 0, 0);
                         var cable = doc.Create.NewFamilyInstance(CurrentPosition, ConductorFamilySympol, draftingView);
+
                         cable.LookupParameter("Diameter").Set(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
                         cable.LookupParameter("Comments").Set(DataHelper.Data[i].DSelectedCable + " - " + DataHelper.Data[i].DfromTo);
 
@@ -118,6 +136,12 @@ namespace CableTraySection
                         var eDiameter = Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DEOD));
 
                         var bet = Math.Max(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i - 1].DOD)), Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
+
+                        #region Dimention Rest of Cables
+                        referenceArray.Append(GetReference((CurrentPosition + new XYZ(diameter * between, 0, 0)), draftingView));
+                        referenceArray.Append(GetReference((CurrentPosition + new XYZ((diameter * between) + (diameter), 0, 0)), draftingView));
+                        #endregion
+
                         // To Centre Of the Next Cable
                         CurrentPosition += new XYZ(bet * between + diameter / 2, 0, 0);
                         var cable = doc.Create.NewFamilyInstance(CurrentPosition, ConductorFamilySympol, draftingView);
@@ -143,15 +167,27 @@ namespace CableTraySection
                     }
                 }
 
+                if (dimention)
+                {
+                    var line2 = Line.CreateBound(new XYZ(0, 0, 0) + new XYZ(0, (trayHeight + 20).CTF(), 0), new XYZ(trayWidth.CTF(), (trayHeight + 20).CTF(), 0));
+                    doc.Create.NewDimension(draftingView, line2, referenceArray);
+                }
+
 
                 trans.Commit();
 
-                TableAndData.DrawTable(doc, draftingView, new XYZ(Utils.Convert_to_Feet(-100), Utils.Convert_to_Feet(-100), 0), DataHelper.Data.Count + 1, DataHelper.Data, trayWidth.ToString(), fillingRatio, sectionName);
+                if (table)
+                {
+                    TableAndData.DrawTable(doc, draftingView, new XYZ(Utils.Convert_to_Feet(0), Utils.Convert_to_Feet(-50), 0), DataHelper.Data.Count + 1, DataHelper.Data, trayWidth.ToString(), fillingRatio, sectionName);
+                }
 
 
 
             }
         }
+
+
+
         public static void LoadFamiliesFromFolder(Document doc, string folderPath)
         {
             string[] familyFiles = Directory.GetFiles(folderPath, "*.rfa");
@@ -179,7 +215,7 @@ namespace CableTraySection
 
         public static Reference GetReference(XYZ point, ViewDrafting view)
         {
-            var line = Line.CreateBound(point, point + new XYZ(0, Utils.Convert_to_Feet(9), 0));
+            var line = Line.CreateBound(point, point + new XYZ(0, (1.0).CTF(), 0));
 
             var curve = DataHelper.Doc.Create.NewDetailCurve(view, line) as CurveElement;
 
@@ -188,6 +224,28 @@ namespace CableTraySection
             var reference = geometryObjects.Reference;
 
             return reference;
+        }
+
+
+       public static string  GetUniqueViewName(Document doc, string baseName)
+        {
+            // Start with the original section name
+            string uniqueName = baseName;
+            int counter = 1;
+
+            // Get all views in the document
+            FilteredElementCollector collector = new FilteredElementCollector(doc)
+                .OfClass(typeof(ViewDrafting));
+
+            // Loop until we find a unique name
+            while (collector.Any(v => v.Name == uniqueName))
+            {
+                // Add a dash and a number to the base name
+                uniqueName = $"{baseName}-{counter}";
+                counter++;
+            }
+
+            return uniqueName;
         }
     }
 }

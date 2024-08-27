@@ -1,4 +1,5 @@
-﻿using CableTraySection.Model;
+﻿using Autodesk.Revit.UI;
+using CableTraySection.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,17 +59,6 @@ namespace CableTraySection.ViewModel
 
         }
 
-        public string oD;
-        public string OD
-        {
-
-            get => oD;
-            set => SetProperty(ref oD, value);
-
-
-        }
-
-
 
         private static ObservableCollection<string> cablesizes = new ObservableCollection<string>();
         public static ObservableCollection<string> CableSizes
@@ -88,7 +78,38 @@ namespace CableTraySection.ViewModel
 
         }
 
+        private static ObservableCollection<CableData> cableDatas = new ObservableCollection<CableData>();
+        public static ObservableCollection<CableData> CableDatas
+        {
+            get
+            {
 
+
+                return cableDatas;
+
+
+            }
+            set
+            {
+                cableDatas = value;
+
+
+
+
+            }
+
+        }
+
+
+        public string oD;
+        public string OD
+        {
+
+            get => oD;
+            set => SetProperty(ref oD, value);
+
+
+        }
 
         public string eOD;
         public string EOD
@@ -120,28 +141,6 @@ namespace CableTraySection.ViewModel
 
         }
 
-
-        private static ObservableCollection<CableData> cableDatas = new ObservableCollection<CableData>();
-        public static ObservableCollection<CableData> CableDatas
-        {
-            get
-            {
-
-
-                return cableDatas;
-
-
-            }
-            set
-            {
-                cableDatas = value;
-
-
-
-
-            }
-
-        }
 
         private double width;
         public double Width
@@ -195,6 +194,19 @@ namespace CableTraySection.ViewModel
         }
 
 
+        private string sectionName;
+
+        public string SectionName { get => sectionName; set => SetProperty(ref sectionName, value); }
+
+        private bool? table = true;
+
+        public bool? Table { get => table; set => SetProperty(ref table, value); }
+
+
+        private bool? dimention = true;
+
+        public bool? Dimention { get => dimention; set => SetProperty(ref dimention, value); }
+
 
 
         //--------------------------------------------------COMMANDS --------------------------------------------------------------
@@ -205,8 +217,17 @@ namespace CableTraySection.ViewModel
 
         private void AddFunc(object obj)
         {
-            CableDatas.Add(new CableData("FROM " + from + " TO " + to, SelectedCableName, OD, EOD));
 
+            if (OD == null || EOD == null || SelectedCableName == null || From == null || To == null)
+            {
+                TaskDialog.Show("Incomplete Data",
+                              "All required fields for the cable data must be completed before proceeding.\nPlease review and fill in the missing information.",
+                                 TaskDialogCommonButtons.Ok);
+
+                return;
+            }
+
+            CableDatas.Add(new CableData("FROM " + From + " TO " + To, SelectedCableName, OD, EOD));
             DataHelper.CableDiameters.Clear();
             DataHelper.CableDiameters = cableDatas.ToList().Select(X => Double.Parse(X.DOD)).ToList();
             DataHelper.EarthingDiameters.Clear();
@@ -281,7 +302,7 @@ namespace CableTraySection.ViewModel
             }
 
 
-            FillingRatio = (sum /( Width*Height)) * 100;
+            FillingRatio = (sum / (Width * Height)) * 100;
 
 
         }
@@ -293,28 +314,32 @@ namespace CableTraySection.ViewModel
 
         private void CreateViewAndTrayFunc(object obj)
         {
+
+            if (SectionName == null || Width == 0 || FillingRatio == 0 || cableDatas.Count == 0)
+            {
+                TaskDialog.Show("Action Required",
+                                "Please complete the following steps before proceeding:\n" +
+                                 "1. Ensure the Section Name is filled.\n" +
+                                 "2. Calculate the Width.\n" +
+                                 "3. Calculate the Filling Ratio.\n" +
+                                  "4. Add the necessary Cables.\n",TaskDialogCommonButtons.Ok);
+
+                return;
+            }
+
             EventHandeler.Initial = initialRatio;
             EventHandeler.Between = betweenRatio;
             EventHandeler.Trayheight = Height;
             EventHandeler.TrayWidht = Width;
             EventHandeler.SectionName = SectionName;
             EventHandeler.FillingRatio = FillingRatio;
+            EventHandeler.Table = (bool)Table;
+            EventHandeler.Dimention = (bool)Dimention;
 
             EventHandeler.Event = Request.event1;
             DataHelper.ExEvent.Raise();
         }
 
-        private string sectionName;
 
-        public string SectionName { get => sectionName; set => SetProperty(ref sectionName, value); }
-
-        private bool? table = true;
-
-        public bool? Table { get => table; set => SetProperty(ref table, value); }
-
-
-        private bool? dimention = true;
-
-        public bool? Dimention { get => dimention; set => SetProperty(ref dimention, value); }
     }
 }

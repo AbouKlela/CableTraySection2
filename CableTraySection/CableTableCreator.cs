@@ -18,7 +18,7 @@ namespace CableTraySection
         public static void DrawTable(Document doc, ViewDrafting view, XYZ startPoint, int numRows, List<CableData> cableDataList , string trayWidth , double fillingRatio, string sectionName)
         {
             // Column widths as per the image
-            double[] columnWidths = { Utils.Convert_to_Feet(75), Utils.Convert_to_Feet(200), Utils.Convert_to_Feet(400), Utils.Convert_to_Feet(120), Utils.Convert_to_Feet(120) };
+            double[] columnWidths = { Utils.Convert_to_Feet(75), Utils.Convert_to_Feet(285), Utils.Convert_to_Feet(400), Utils.Convert_to_Feet(120), Utils.Convert_to_Feet(120) };
             double cellHeight = Utils.Convert_to_Feet(50); // Row height
             int numCols = columnWidths.Length;
 
@@ -78,7 +78,7 @@ namespace CableTraySection
                     WriteText(doc, view, rowStart + new XYZ(columnWidths[0]/2 , -cellHeight / 2, 0), (i + 1).ToString());
 
                     // Feeder Details
-                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[1] - Utils.Convert_to_Feet(25), -cellHeight / 2, 0), data.DfromTo);
+                    WriteText(doc, view, rowStart + new XYZ(currentX + columnWidths[1] - Utils.Convert_to_Feet(60), -cellHeight / 2, 0), data.DfromTo);
                     currentX += columnWidths[1];
 
                     // Feeder

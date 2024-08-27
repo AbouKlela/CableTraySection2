@@ -43,7 +43,7 @@
                 <RowDefinition Height="5*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <TextBlock   Grid.Row="0" Grid.Column="0" Text="Cable Tray Sizer" VerticalAlignment="Center" Grid.ColumnSpan="2 "  HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0" />
+            <TextBlock   Grid.Row="0" Grid.Column="0" Text="Cable Tray Section ToolKit" VerticalAlignment="Center" Grid.ColumnSpan="2 "  HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0" />
 
             <Button  Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="0,5,5,0" Click="Button_Click"  />
 
