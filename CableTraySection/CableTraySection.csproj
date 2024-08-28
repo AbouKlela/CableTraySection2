@@ -264,12 +264,20 @@
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\ViewModelLogIn.cs" />
     <Compile Include="View\CTView.xaml.cs">
       <DependentUpon>CTView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LogIn.xaml.cs">
+      <DependentUpon>LogIn.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="View\CTView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\LogIn.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

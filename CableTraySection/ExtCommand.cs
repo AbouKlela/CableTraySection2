@@ -22,6 +22,11 @@ namespace CableTraySection
 
                 DataHelper.FilePath = "C:\\KLELA-SECTION\\Cable Diameters.xlsx";
 
+
+
+                LogIn logIn = new LogIn();
+                logIn.ShowDialog();
+
                 CTView view = new CTView();
                 view.Show();
 
