@@ -13,34 +13,22 @@ using System.Collections.ObjectModel;
 using System.Web.UI.WebControls;
 using System.Windows.Markup;
 using CableTraySection.View;
+using Newtonsoft.Json;
 
 namespace CableTraySection.ViewModel
 {
     public class ViewModelLogIn : ViewModelBase
     {
         public static event EventHandler RequestClose;
-        public void OnRequestClose()
-        {
-            RequestClose?.Invoke(this, EventArgs.Empty);
-        }
-        FirebaseConfig config { get; set; }
-        FirebaseClient client { get; set; }
+
+        FirebaseConfig config  = new FirebaseConfig() { AuthSecret= "RsDTG2wsWcCs4ATd4mwUf0ZyNbhYy7wpnBzLzdSS", BasePath= "https://login-a3b34-default-rtdb.firebaseio.com/" };
+
+        FirebaseClient client;
+
         Dictionary<string, string> retrievedMacAddresses = new Dictionary<string, string>();
 
-        bool login = false;
-        public ViewModelLogIn()
-        {
-
-            config = new FirebaseConfig()
-            {
-                AuthSecret = "RsDTG2wsWcCs4ATd4mwUf0ZyNbhYy7wpnBzLzdSS",
-                BasePath = "https://login-a3b34-default-rtdb.firebaseio.com/"
-            };
-            client = new FirebaseClient(config);
-        }
-
-
-
+        public static bool login = false;
+     
         private string macAdress;
 
         public string MacAdress { get => macAdress; set => SetProperty(ref macAdress, value); }
@@ -73,6 +61,10 @@ namespace CableTraySection.ViewModel
                     MacAdress = nic.GetPhysicalAddress().ToString();
                 }
             }
+            if (MacAdress == null)
+            {
+                TaskDialog.Show("Error", "Please, check your internet connection");
+            }
         }
 
 
@@ -92,14 +84,22 @@ namespace CableTraySection.ViewModel
 
         private async void Login(object obj)
         {
+            try
+            {
+                client = new FirebaseClient(config);
 
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Error", ex.Message);
+            }
 
             if (MacAdress != null)
             {
                 if (client != null)
                 {
                     var response = await client.GetTaskAsync("Users");
-                    retrievedMacAddresses = response.ResultAs<Dictionary<string, string>>();
+                    retrievedMacAddresses = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Body);
                     login = false;
                     foreach (var mac in retrievedMacAddresses)
                     {
@@ -149,6 +149,15 @@ namespace CableTraySection.ViewModel
 
         private async void RequestAccess(object commandParameter)
         {
+            try
+            {
+                client = new FirebaseClient(config);
+
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Error", ex.Message);
+            }
             if (MacAdress != null)
             {
 
@@ -161,6 +170,14 @@ namespace CableTraySection.ViewModel
                 TaskDialog.Show("Error", "Please, get your MAC address first");
             }
         }
+
+
+        public void OnRequestClose()
+        {
+            RequestClose?.Invoke(this, EventArgs.Empty);
+
+        }
+
 
     }
 }

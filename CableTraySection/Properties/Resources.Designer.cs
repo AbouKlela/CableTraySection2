@@ -61,12 +61,12 @@ namespace CableTraySection.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static System.Drawing.Bitmap Icon {
+        public static System.Drawing.Icon CableTray {
             get {
-                object obj = ResourceManager.GetObject("Icon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("CableTray", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

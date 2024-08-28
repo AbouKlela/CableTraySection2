@@ -96,7 +96,6 @@ namespace CableTraySection
 
             }
             FileInfo fi = new FileInfo(DataHelper.FilePath);
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (ExcelPackage excelPackage = new ExcelPackage(fi))
             {
                 //Get a WorkSheet by index. Note that EPPlus indexes are base 1, not base 0!

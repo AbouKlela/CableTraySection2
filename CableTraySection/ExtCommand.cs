@@ -28,11 +28,17 @@ namespace CableTraySection
                 ViewModelLogIn.RequestClose += (s, e) =>
                 {
 
+                    if (ViewModel.ViewModelLogIn.login == true)
+                    {
 
-                    //Load Families
-                    EventHandeler.Event = Request.event2;
-                    DataHelper.ExEvent.Raise();
 
+                        //Load Families
+                        EventHandeler.Event = Request.event2;
+                        DataHelper.ExEvent.Raise();
+
+
+
+                    }
 
 
                 };
