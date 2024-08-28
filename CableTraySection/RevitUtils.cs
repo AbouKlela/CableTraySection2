@@ -75,8 +75,8 @@ namespace CableTraySection
                 if (dimention)
                 {
                     #region Dimention The Trray
-                    referenceArray.Append(GetReference(currentPosition, draftingView));
-                    referenceArray.Append(GetReference(currentPosition + new XYZ(trayWidth.CTF(), 0, 0), draftingView));
+                    referenceArray.Append(GetReferenceVertical(currentPosition, draftingView));
+                    referenceArray.Append(GetReferenceVertical(currentPosition + new XYZ(trayWidth.CTF(), 0, 0), draftingView));
                     var line = Line.CreateBound(new XYZ(0, 0, 0) + new XYZ(0, (trayHeight + 50).CTF(), 0), new XYZ(trayWidth.CTF(), (trayHeight + 50).CTF(), 0));
                     doc.Create.NewDimension(draftingView, line, referenceArray, dimType);
                     #endregion 
@@ -105,8 +105,8 @@ namespace CableTraySection
                         {
 
                             #region Dimention First Cable
-                            referenceArray.Append(GetReference((currentPosition + new XYZ(diameter * initial, 0, 0)), draftingView));
-                            referenceArray.Append(GetReference((currentPosition + new XYZ((diameter * initial) + (diameter), 0, 0)), draftingView));
+                            referenceArray.Append(GetReferenceVertical((currentPosition + new XYZ(diameter * initial, 0, 0)), draftingView));
+                            referenceArray.Append(GetReferenceVertical((currentPosition + new XYZ((diameter * initial) + (diameter), 0, 0)), draftingView));
                             #endregion
 
                         }
@@ -127,8 +127,8 @@ namespace CableTraySection
                         {
                             if (dimention)
                             {
-                                referenceArrayEarthing.Append(GetReference(currentPosition, draftingView));
-                                referenceArrayEarthing.Append(GetReference(currentPosition + new XYZ(eDiameter, 0, 0), draftingView));
+                                referenceArrayEarthing.Append(GetReferenceVertical(currentPosition, draftingView));
+                                referenceArrayEarthing.Append(GetReferenceVertical(currentPosition + new XYZ(eDiameter, 0, 0), draftingView));
                                 var lineE = Line.CreateBound(currentPosition + new XYZ(0, (-20.0 - trayThickness).CTF(), 0), currentPosition + new XYZ(eDiameter, 0, 0) + new XYZ(0, (-20.0 - trayThickness).CTF(), 0));
                                 doc.Create.NewDimension(draftingView, lineE, referenceArrayEarthing, dimType);
                                 referenceArrayEarthing.Clear();
@@ -153,8 +153,8 @@ namespace CableTraySection
                         var bet = Math.Max(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i - 1].DOD)), Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
 
                         #region Dimention Rest of Cables
-                        referenceArray.Append(GetReference((currentPosition + new XYZ(diameter * between, 0, 0)), draftingView));
-                        referenceArray.Append(GetReference((currentPosition + new XYZ((diameter * between) + (diameter), 0, 0)), draftingView));
+                        referenceArray.Append(GetReferenceVertical((currentPosition + new XYZ(diameter * between, 0, 0)), draftingView));
+                        referenceArray.Append(GetReferenceVertical((currentPosition + new XYZ((diameter * between) + (diameter), 0, 0)), draftingView));
                         #endregion
 
                         // To Centre Of the Next Cable
@@ -172,8 +172,8 @@ namespace CableTraySection
                         {
                             if (dimention)
                             {
-                                referenceArrayEarthing.Append(GetReference(currentPosition, draftingView));
-                                referenceArrayEarthing.Append(GetReference(currentPosition + new XYZ(eDiameter, 0, 0), draftingView));
+                                referenceArrayEarthing.Append(GetReferenceVertical(currentPosition, draftingView));
+                                referenceArrayEarthing.Append(GetReferenceVertical(currentPosition + new XYZ(eDiameter, 0, 0), draftingView));
                                 var lineE = Line.CreateBound(currentPosition + new XYZ(0, (-20.0 - trayThickness).CTF(), 0), currentPosition + new XYZ(eDiameter, 0, 0) + new XYZ(0, (-20.0 - trayThickness).CTF(), 0));
                                 doc.Create.NewDimension(draftingView, lineE, referenceArrayEarthing, dimType);
                                 referenceArrayEarthing.Clear();
@@ -207,16 +207,16 @@ namespace CableTraySection
                     }
                     //Tray Height Dimention
                     referenceArray.Clear();
-                    var lineHeight = Line.CreateBound(new XYZ((trayWidth + 50).CTF(), 0, 0), new XYZ((trayWidth + 50).CTF(), (trayHeight).CTF(), 0));
-                    referenceArray.Append(GetReference(new XYZ((trayWidth).CTF(), 0, 0), draftingView));
-                    referenceArray.Append(GetReference(new XYZ((trayWidth).CTF(), (trayHeight).CTF(), 0), draftingView));
+                    var lineHeight = Line.CreateBound(new XYZ((trayWidth +trayThickness +  50).CTF(), 0, 0), new XYZ((trayWidth+ trayThickness+ 50).CTF(), (trayHeight).CTF(), 0));
+                    referenceArray.Append(GetReferenceHorizontal(new XYZ((trayWidth).CTF(), 0, 0), draftingView));
+                    referenceArray.Append(GetReferenceHorizontal(new XYZ((trayWidth).CTF(), (trayHeight).CTF(), 0), draftingView));
                     doc.Create.NewDimension(draftingView, lineHeight, referenceArray, dimType);
 
                     //Tray Thikness Dimention
                     referenceArray.Clear();
                     var lineThikness = Line.CreateBound(new XYZ(0, (-20.0 - trayThickness).CTF(), 0), new XYZ((-trayThickness).CTF(), (-20.0 - trayThickness).CTF(), 0));
-                    referenceArray.Append(GetReference(new XYZ(0, 0, 0), draftingView));
-                    referenceArray.Append(GetReference(new XYZ((-trayThickness).CTF(), 0, 0), draftingView));
+                    referenceArray.Append(GetReferenceVertical(new XYZ(0, 0, 0), draftingView));
+                    referenceArray.Append(GetReferenceVertical(new XYZ((-trayThickness).CTF(), 0, 0), draftingView));
                     var d = doc.Create.NewDimension(draftingView, lineThikness, referenceArray, dimType);
 
                     referenceArray.Clear();
@@ -266,9 +266,21 @@ namespace CableTraySection
         }
 
 
-        public static Reference GetReference(XYZ point, ViewDrafting view)
+        public static Reference GetReferenceVertical(XYZ point, ViewDrafting view)
         {
             var line = Line.CreateBound(point, point + new XYZ(0, (1.0).CTF(), 0));
+
+            var curve = DataHelper.Doc.Create.NewDetailCurve(view, line) as CurveElement;
+
+            var geometryObjects = curve.get_Geometry(new Options() { ComputeReferences = true }).ToList().FirstOrDefault() as Line;
+
+            var reference = geometryObjects.Reference;
+
+            return reference;
+        }
+        public static Reference GetReferenceHorizontal(XYZ point, ViewDrafting view)
+        {
+            var line = Line.CreateBound(point, point + new XYZ((1.0).CTF(), 0, 0));
 
             var curve = DataHelper.Doc.Create.NewDetailCurve(view, line) as CurveElement;
 
@@ -319,7 +331,6 @@ namespace CableTraySection
             // Duplicate the DimensionType
             DimensionType newDimType = dimType.Duplicate("CT-TOOLKIT") as DimensionType;
 
-            // Set Accuracy to 0.1
             if (newDimType != null)
             {
                 FormatOptions formatOptions = newDimType.GetUnitsFormatOptions();
