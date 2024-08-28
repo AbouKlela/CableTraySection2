@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Autodesk.Revit.UI;
+using FireSharp.Config;
+using FireSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CableTraySection.ViewModel;
 
 namespace CableTraySection.View
 {
@@ -23,6 +28,7 @@ namespace CableTraySection.View
         public LogIn()
         {
             InitializeComponent();
+            ViewModelLogIn.RequestClose += (s, e) => this.Close();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -31,9 +37,11 @@ namespace CableTraySection.View
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            Close();
+           this.Close();
 
         }
+
+
+       
     }
 }

@@ -11,7 +11,6 @@ namespace CableTraySection
         public static double Between { get; set; }
         public static string SectionName { get; set; }
         public static double FillingRatio { get; set; }
-
         public static bool Table { get; set; }
         public static bool Dimention { get; set; }
         public static double TrayThickness { get;  set; }
@@ -32,7 +31,7 @@ namespace CableTraySection
 
                         break;
                     case Request.event3:
-                        //Do something
+                        // Event 3 (NOT IMPLEMENTED)
                         break;
                     default:
                         break;

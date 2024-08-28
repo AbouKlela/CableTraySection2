@@ -6,8 +6,8 @@
         ResizeMode="NoResize" WindowStyle="None"
         TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
         Background="{DynamicResource MaterialDesign.Brush.Background}"
-        TextElement.FontWeight="Medium"
-        Title="Cable Tray Sections Creator" Height="800" Width="1000" MouseDown="Window_MouseDown" Topmost="False"  >
+        TextElement.FontWeight="Medium" 
+        Title="Cable Tray Sections Creator" Height="800" Width="1000" MouseDown="Window_MouseDown" Topmost="True"  >
     
     <Window.DataContext>
         <viewModel:ViewModel />

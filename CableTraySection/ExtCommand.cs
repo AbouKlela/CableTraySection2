@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using CableTraySection.View;
+using CableTraySection.ViewModel;
 
 namespace CableTraySection
 {
@@ -16,19 +17,26 @@ namespace CableTraySection
                 DataHelper.Doc = DataHelper.UiDoc.Document;
                 ExternalEvent externalEvent = ExternalEvent.Create(new EventHandeler());
                 DataHelper.ExEvent = externalEvent;
-                //Load Families
-                EventHandeler.Event = Request.event2;
-                DataHelper.ExEvent.Raise();
-
                 DataHelper.FilePath = "C:\\KLELA-SECTION\\Cable Diameters.xlsx";
 
 
 
                 LogIn logIn = new LogIn();
-                logIn.ShowDialog();
+                logIn.Show();
 
-                CTView view = new CTView();
-                view.Show();
+
+                ViewModelLogIn.RequestClose += (s, e) =>
+                {
+
+
+                    //Load Families
+                    EventHandeler.Event = Request.event2;
+                    DataHelper.ExEvent.Raise();
+
+
+
+                };
+
 
                 return Result.Succeeded;
             }
@@ -40,5 +48,6 @@ namespace CableTraySection
                 throw;
             }
         }
+
     }
 }

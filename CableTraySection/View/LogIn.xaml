@@ -9,9 +9,8 @@
         xmlns:viewModel="clr-namespace:CableTraySection.ViewModel"
         ResizeMode="NoResize" WindowStyle="None"
         TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
-        Background="{DynamicResource MaterialDesign.Brush.Background}"
-        TextElement.FontWeight="Medium"
-        Height="400" Width="400" MouseDown="Window_MouseDown">
+        TextElement.FontWeight="Medium" Topmost="True"
+        Height="400" Width="400" MouseDown="Window_MouseDown" Background="Transparent" AllowsTransparency="True"> 
 
     <Window.DataContext>
         <viewModel:ViewModelLogIn />
@@ -26,21 +25,24 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <materialDesign:Card>
+    <materialDesign:Card UniformCornerRadius="12" >
+        <Border BorderBrush="Black" BorderThickness="3" CornerRadius="10" Background="White" Margin="2">
             <Grid  >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="0.25*" />
+
 
                 </Grid.RowDefinitions>
-            <TextBlock   Grid.Row="0" Grid.Column="0" Text="Cable Tray Section ToolKit" VerticalAlignment="Top" Grid.ColumnSpan="2 "  HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0" />
+                <TextBlock   Grid.Row="0" Grid.Column="0" Text="Cable Tray Section ToolKit" VerticalAlignment="Top" Grid.ColumnSpan="2 "  HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0" />
 
-            <Button  Height="20" Width="20" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="0,5,5,0" Click="Button_Click"  />
+                <Button  Height="20" Width="20" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="0,5,5,0" Click="Button_Click"  />
 
-            <materialDesign:PackIcon Kind="Close" Height="20" Width="20" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="0,5,5,0" MouseDown="Button_Click"  />
+                <materialDesign:PackIcon Kind="Close" Height="20" Width="20" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="0,5,5,0" MouseDown="Button_Click"  />
 
-            <!-- Welcome Text -->
+                <!-- Welcome Text -->
                 <TextBlock Text="Welcome" HorizontalAlignment="Center" VerticalAlignment="Center" 
                            FontSize="24" FontWeight="Bold"  Grid.Row="0" />
 
@@ -55,10 +57,17 @@
                 <!-- Log In and Request Access Buttons -->
                 <StackPanel HorizontalAlignment="Center" Grid.Row="2">
                     <Button Content="Log In" Width="150" 
-                            Command="{Binding LogInCommand}" Margin="0,10,0,10"/>
+                             Margin="0,10,0,10" Command="{Binding Logincommand}"/>
                     <Button Content="Request Access" Width="150" 
                             Command="{Binding RequestAccessCommand}" />
                 </StackPanel>
+
+
+                <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="2">
+                    <materialDesign:PackIcon Kind="Code" Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,0,5" />
+                    <TextBlock  Text="Developed by: Eng. Mohamed AbouKlela | IBIMS " VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="15" Margin="10,0,0,5" />
+                </StackPanel>
             </Grid>
+        </Border>
     </materialDesign:Card>
 </Window>

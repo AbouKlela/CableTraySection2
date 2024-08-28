@@ -1,4 +1,6 @@
 ﻿using CableTraySection.ViewModel;
+using FireSharp.Config;
+using FireSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,11 +8,38 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Autodesk.Revit.UI;
+using System.Collections.ObjectModel;
+using System.Web.UI.WebControls;
+using System.Windows.Markup;
+using CableTraySection.View;
 
 namespace CableTraySection.ViewModel
 {
-    internal class ViewModelLogIn :ViewModelBase
+    public class ViewModelLogIn : ViewModelBase
     {
+        public static event EventHandler RequestClose;
+        public void OnRequestClose()
+        {
+            RequestClose?.Invoke(this, EventArgs.Empty);
+        }
+        FirebaseConfig config { get; set; }
+        FirebaseClient client { get; set; }
+        Dictionary<string, string> retrievedMacAddresses = new Dictionary<string, string>();
+
+        bool login = false;
+        public ViewModelLogIn()
+        {
+
+            config = new FirebaseConfig()
+            {
+                AuthSecret = "RsDTG2wsWcCs4ATd4mwUf0ZyNbhYy7wpnBzLzdSS",
+                BasePath = "https://login-a3b34-default-rtdb.firebaseio.com/"
+            };
+            client = new FirebaseClient(config);
+        }
+
+
 
         private string macAdress;
 
@@ -46,25 +75,62 @@ namespace CableTraySection.ViewModel
             }
         }
 
-        private RelayCommand logInCommand;
 
-        public ICommand LogInCommand
+        private RelayCommand loginCommand;
+        public ICommand Logincommand
         {
             get
             {
-                if (logInCommand == null)
+                if (loginCommand == null)
                 {
-                    logInCommand = new RelayCommand(LogIn);
+                    loginCommand = new RelayCommand(Login);
                 }
 
-                return logInCommand;
+                return loginCommand;
             }
         }
 
-        private void LogIn(object commandParameter)
+        private async void Login(object obj)
         {
 
+
+            if (MacAdress != null)
+            {
+                if (client != null)
+                {
+                    var response = await client.GetTaskAsync("Users");
+                    retrievedMacAddresses = response.ResultAs<Dictionary<string, string>>();
+                    login = false;
+                    foreach (var mac in retrievedMacAddresses)
+                    {
+                        if (mac.Value == MacAdress)
+                        {
+                            login = true;
+                            OnRequestClose();
+                            CTView view = new CTView();
+                            view.Show();
+
+                            break;
+                        }
+                    }
+
+                    if (!login)
+                    {
+                        TaskDialog.Show("Access Denied", "You are not authorized to use this application");
+                    }
+                }
+                else
+                {
+                    TaskDialog.Show("Connection Error", "Please, check your internet connection");
+                } 
+            }
+            else
+            {
+                TaskDialog.Show("Error", "Please, get your MAC address first");
+            }
         }
+
+
 
         private RelayCommand requestAccessCommand;
 
@@ -81,8 +147,19 @@ namespace CableTraySection.ViewModel
             }
         }
 
-        private void RequestAccess(object commandParameter)
+        private async void RequestAccess(object commandParameter)
         {
+            if (MacAdress != null)
+            {
+
+                await client.PushTaskAsync("Requests", MacAdress);
+                TaskDialog.Show("Request Sent", "Your request has been sent to the administrator");
+                OnRequestClose();
+            }
+            else
+            {
+                TaskDialog.Show("Error", "Please, get your MAC address first");
+            }
         }
 
     }

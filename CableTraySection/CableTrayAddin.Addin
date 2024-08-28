@@ -1,0 +1,12 @@
+﻿<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>CableTrayAddin</Name>
+		<Assembly>RevitAddinManager/RevitAddinManager.dll</Assembly>
+		<FullClassName>CableTraySection.ExtApp</FullClassName>
+		<AddInId>43C93788-65EC-4C43-8A98-E685486AF188</AddInId>
+		<VendorId>MohamedAbouKlela | IBIMS</VendorId>
+		<VendorDescription>ENG.Mohamed Abouklela, www.linkedin.com/in/klela</VendorDescription>
+	</AddIn>
+</RevitAddIns>
+
+
