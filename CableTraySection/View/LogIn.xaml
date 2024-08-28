@@ -26,7 +26,7 @@
     </Window.Resources>
 
     <materialDesign:Card UniformCornerRadius="12" >
-        <Border BorderBrush="Black" BorderThickness="3" CornerRadius="10"  Margin="2">
+        <Border BorderBrush="#FFFFC107" BorderThickness="3" CornerRadius="10"  Margin="2" >
             <Grid  >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
