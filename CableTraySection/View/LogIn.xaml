@@ -9,7 +9,7 @@
         xmlns:viewModel="clr-namespace:CableTraySection.ViewModel"
         ResizeMode="NoResize" WindowStyle="None"
         TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
-        TextElement.FontWeight="Medium" Topmost="True"
+        TextElement.FontWeight="DemiBold" Topmost="True"
         Height="400" Width="400" MouseDown="Window_MouseDown" Background="Transparent" AllowsTransparency="True"> 
 
     <Window.DataContext>
@@ -19,14 +19,14 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Amber" SecondaryColor="Blue" />
+                <materialDesign:BundledTheme BaseTheme="Inherit" PrimaryColor="Amber" SecondaryColor="Blue" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 
     <materialDesign:Card UniformCornerRadius="12" >
-        <Border BorderBrush="Black" BorderThickness="3" CornerRadius="10" Background="White" Margin="2">
+        <Border BorderBrush="Black" BorderThickness="3" CornerRadius="10"  Margin="2">
             <Grid  >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
