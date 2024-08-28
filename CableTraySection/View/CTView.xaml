@@ -228,7 +228,8 @@
             <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="2">
                 <materialDesign:PackIcon Kind="Code" Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,0,5" />
                 <TextBlock  Text="Developed by: Eng. Mohamed AbouKlela " VerticalAlignment="Center" HorizontalAlignment="Stretch"  FontSize="15" Margin="10,0,0,5" />
-                <TextBlock Text="Copyright © 2024 IBIMS All rights reserved." VerticalAlignment="Center"   FontSize="15" Margin="370,0,0,5"  />
+                <materialDesign:PackIcon Kind="Linkedin" Height="15" Width="15" VerticalAlignment="Center" Margin="0"   MouseDown="PackIcon_MouseDown" />
+                <TextBlock Text="Copyright © 2024 IBIMS All rights reserved." VerticalAlignment="Center"   FontSize="15" Margin="360,0,0,5"  />
 
         </StackPanel>
 

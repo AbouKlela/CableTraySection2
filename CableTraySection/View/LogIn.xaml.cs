@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CableTraySection.ViewModel;
+using System.Diagnostics;
 
 namespace CableTraySection.View
 {
@@ -41,7 +42,15 @@ namespace CableTraySection.View
 
         }
 
+     
 
-       
+        private void PackIcon_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://www.linkedin.com/in/klela/",
+                UseShellExecute = true
+            });
+        }
     }
 }
