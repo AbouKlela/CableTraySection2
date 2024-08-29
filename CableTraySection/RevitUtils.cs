@@ -150,20 +150,20 @@ namespace CableTraySection
                         var diameter = Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD));
                         var eDiameter = Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DEOD));
 
-                        var bet = Math.Max(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i - 1].DOD)), Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
+                        var largestCableDiameter = Math.Max(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i - 1].DOD)), Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
 
                         #region Dimention Rest of Cables
-                        referenceArray.Append(GetReferenceVertical((currentPosition + new XYZ(diameter * between, 0, 0)), draftingView));
-                        referenceArray.Append(GetReferenceVertical((currentPosition + new XYZ((diameter * between) + (diameter), 0, 0)), draftingView));
+                        referenceArray.Append(GetReferenceVertical((currentPosition + new XYZ(largestCableDiameter * between, 0, 0)), draftingView));
+                        referenceArray.Append(GetReferenceVertical((currentPosition + new XYZ((largestCableDiameter * between) + (diameter), 0, 0)), draftingView));
                         #endregion
 
                         // To Centre Of the Next Cable
-                        currentPosition += new XYZ(bet * between + diameter / 2, 0, 0);
+                        currentPosition += new XYZ(largestCableDiameter * between + diameter / 2, 0, 0);
                         var cable = doc.Create.NewFamilyInstance(currentPosition, ConductorFamilySympol, draftingView);
                         cable.LookupParameter("Diameter").Set(Utils.Convert_to_Feet(double.Parse(DataHelper.Data[i].DOD)));
                         cable.LookupParameter("Comments").Set(DataHelper.Data[i].DSelectedCable + " - " + DataHelper.Data[i].DfromTo);
 
-                        // To End Of the Next Calbe
+                        // To End Of the current Calbe
                         currentPosition += new XYZ(diameter / 2, 0, 0);
 
 
